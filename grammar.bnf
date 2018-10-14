@@ -33,3 +33,69 @@
               | a | b | c | e | g | h | j | k | l | m | n | p | r | s | t | v | w | x | y | z
 
 <ident> ::= <character> | digit { character | digit }
+
+<Statements> ::= <Statement> NewLine <Statements>
+               | <Statement>
+               | NewLine <Statement>
+
+<ExpressionList> ::= <Expression> ',' <ExpressionList>
+                   | <Expression>
+
+<Expression> ::= <AndExpression> OR <Expression>
+               | <AndExpression>
+
+<AndExpression> ::= <NotExpression> AND <AndExpression>
+                  | <NotExpression>
+
+<NotExpression> ::= <NotOperator> <ComparisonExpression>
+                  | <ComparisonExpression>
+
+<ComparisonExpression> ::= <AddExpression> '=' <ComparisonExpression>
+                         | <AddExpression> '!=' <ComparisonExpression>
+                         | <AddExpression> '<' <ComparisonExpression>
+                         | <AddExpression> 'lt' <ComparisonExpression>
+                         | <AddExpression> 'lessthan' <ComparisonExpression>
+                         | <AddExpression> '<=' <ComparisonExpression>
+                         | <AddExpression> 'lte' <ComparisonExpression>
+                         | <AddExpression> 'lessthanequal' <ComparisonExpression>
+                         | <AddExpression> '>' <ComparisonExpression>
+                         | <AddExpression> 'gt' <ComparisonExpression>
+                         | <AddExpression> 'greaterthan' <ComparisonExpression>
+                         | <AddExpression> '>=' <ComparisonExpression>
+                         | <AddExpression> 'gte' <ComparisonExpression>
+                         | <AddExpression> 'greaterthanequal' <ComparisonExpression>
+                         | <AddExpression>
+
+<AddExpression> ::= <MultiExpression> '+' <AddExpression>
+                  | <MultiExpression> 'add' <AddExpression>
+                  | <MultiExpression> 'plus' <AddExpression>
+                  | <MultiExpression> '-' <AddExpression>
+                  | <MultiExpression> 'subtract' <AddExpression>
+                  | <MultiExpression>
+
+<MultiExpression> ::= <NegativeExpression> '*' <MultiExpression>
+                    | <NegativeExpression> 'mult' <MultiExpression>
+                    | <NegativeExpression> 'multiply' <MultiExpression>
+                    | <NegativeExpression> '/' <MultiExpression>
+                    | <NegativeExpression> 'div' <MultiExpression>
+                    | <NegativeExpression> 'divide' <MultiExpression>
+                    | <NegativeExpression>
+
+<NegativeExpression> ::= '-' <PowerExpression>
+                       | <PowerExpression>
+
+<PowerExpression> ::= <PowerExpression> '^' <ExpValue>
+                    | <ExpValue>
+
+<ExpValue> ::= '(' <Expression> ')'
+             | <ident>
+             | <ident> '(' <ExpressionList> ')'
+             | <Const>
+
+<Const> ::= Integer
+          | String
+          | Real
+
+
+
+
