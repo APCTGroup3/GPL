@@ -38,6 +38,12 @@
                | <Statement>
                | NewLine <Statement>
 
+<Statement> ::= <if>
+               | <while>
+               | <assignment>
+
+<assignment> ::= <ident> <assign> <Const>
+
 <ExpressionList> ::= <Expression> ',' <ExpressionList>
                    | <Expression>
 
@@ -95,7 +101,10 @@
 <Const> ::= Integer
           | String
           | Real
+          | Boolean
 
-
-
-
+<Integer> ::= <digit> <Integer>
+<String> ::= <character> <String>
+<Real> ::= <Integer> '.' <Integer>
+<Boolean> ::= true
+            | false
