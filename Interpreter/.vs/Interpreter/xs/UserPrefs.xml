@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{1A7FE083-C4DE-4993-A659-B6C1EA49DDAE}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Interpreter/Lexer.cs">
+    <Files>
+      <File FileName="Interpreter/Program.cs" Line="11" Column="29" />
+      <File FileName="Interpreter/Lexer.cs" Line="13" Column="11" />
+      <File FileName="Interpreter/Token.cs" Line="12" Column="9" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.ItemProperties.Interpreter PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>
