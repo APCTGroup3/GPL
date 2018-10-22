@@ -31,7 +31,69 @@ namespace Interpreter{
 
 
         public void Tokenise(){
-            string[] stringToks = Regex.Split(this.sourceCode, " |$"); //Split at whitespace or newline
+            string code = this.sourceCode; //Probably should just pass code as param
+            while(code.Length > 0){
+
+                Console.WriteLine(code);
+
+                // Check if the character is an operator
+                var operatorFound = isOperator(code);
+                if(operatorFound.operatorFound){
+                    code = operatorFound.codeRemaining;
+                    Console.WriteLine("Operator found");
+                    continue;
+                }
+
+                // Check if the character is an statement
+                var statementFound = isStatement(code);
+                if (statementFound.statementFound)
+                {
+                    code = statementFound.codeRemaining;
+                    Console.WriteLine("Statement found");
+                    continue;
+                }
+
+
+                code = code.Substring(1);
+            }
+        }
+
+        public List<Token> getTokenList(){
+            return tokenList;
+        }
+
+        private (bool operatorFound, string codeRemaining) isOperator( string code){
+            if(code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*'){
+                return (operatorFound: true, codeRemaining: code.Substring(1));
+            }
+            return (operatorFound: false, codeRemaining: null);
+        }
+
+        private (bool statementFound, string codeRemaining) isStatement(string code)
+        {
+            if (code.Length >= 2 && code.Substring(0,2) == "if")
+            {
+                return (statementFound: true, codeRemaining: code.Substring(2));
+            }
+            if (code.Length >= 5 && code.Substring(0, 5) == "else")
+            {
+                return (statementFound: true, codeRemaining: code.Substring(5));
+            }
+
+            return (statementFound: false, codeRemaining: null);
+        }
+
+        //private TokenTypes findType(string tok){
+
+        //}
+    }
+}
+
+
+
+
+/*
+string[] stringToks = Regex.Split(this.sourceCode, " |$"); //Split at whitespace or newline
 
             foreach(string tok in stringToks){ // Works for now but should probably be replaced by a classic for loop e.g for(int i = 0; ... Because that will allow us to store character number info
                 tokenList.Add(new Token()
@@ -42,19 +104,16 @@ namespace Interpreter{
             }
 
             /* FOR DEBUGGING */
-            Console.WriteLine(tokenList.Count); // Look at how many tokens were found
-        }
+/*
+Console.WriteLine(tokenList.Count); // Look at how many tokens were found
+*/
 
-        public List<Token> getTokenList(){
-            return tokenList;
-        }
 
-        private TokenTypes findType(string tok){
-            /*
+/*
              * Categorises an input string based on what that string contains
              * Should include a way of categorising an incorrectly formatted string i.e a+b and return a helpful error message e.g "a+b is invalid, please seperate with whitespace"
              */
-
+/*
             switch(tok){
                 case "+":
                 return TokenTypes.expression;
@@ -76,7 +135,5 @@ namespace Interpreter{
                 
                 default:
                 return TokenTypes.identity;
-            };
-        }
-    }
-}
+            }
+            */

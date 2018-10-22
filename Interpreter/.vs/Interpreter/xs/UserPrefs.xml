@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Interpreter/Lexer.cs">
     <Files>
       <File FileName="Interpreter/Program.cs" Line="11" Column="29" />
-      <File FileName="Interpreter/Lexer.cs" Line="13" Column="11" />
+      <File FileName="Interpreter/Lexer.cs" Line="80" Column="10" />
       <File FileName="Interpreter/Token.cs" Line="12" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
