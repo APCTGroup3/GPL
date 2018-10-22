@@ -4,13 +4,13 @@ namespace Interpreter{
         assignment = 0,
         statement = 1,
         identity = 2,
-        expression = 3, //Operator, but operator is a reserveword
-        eof = 4,
+        op = 3, //Operator, but operator is a reserveword
+        constant = 4,
+        eof = 5,
     }
     class Token{
         public TokenTypes type;
         public int lineNumber;
         public string token;
-
     }
 }
