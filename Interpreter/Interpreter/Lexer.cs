@@ -23,7 +23,7 @@ namespace Interpreter{
 
         private bool isOperator(ref string code, int lineNum)
         {
-            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || code[0] == '.')
+            if (code[0] == '>' || code[0] == '<' || code[0] == '+' ||(code[0] == '-' && code[1] > '9') || code[0] == '/' || code[0] == '*' || code[0] == '.' || code[0] == '^')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
@@ -61,7 +61,25 @@ namespace Interpreter{
         }
 
         private bool isConstant(ref string code, int lineNum){
-            if( (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
+            if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
+            {
+                // Negative number
+                // Create a new token with the correct type and the part of the source code it is scanning
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 2),
+                    type = TokenTypes.constant,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+
+                //Remove the token from the source code
+                code = code.Substring(1);
+                return true;
+            }
+
+            if ( (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
             {
                 // is a digit
                 // Create a new token with the correct type and the part of the source code it is scanning

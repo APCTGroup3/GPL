@@ -7,7 +7,7 @@ namespace Interpreter
     {
         public static void Main(string[] args)
         {
-            string sourceCode = "if x > y then a+b else 8.8";
+            string sourceCode = "if x > -4 then a+b else 8.8";
             Lexer lexer = new Lexer(sourceCode);
             lexer.Tokenise();
             List<Token> tokenList = lexer.getTokenList();
