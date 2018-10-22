@@ -37,18 +37,15 @@ namespace Interpreter{
                 Console.WriteLine(code);
 
                 // Check if the character is an operator
-                var operatorFound = isOperator(code);
-                if(operatorFound.operatorFound){
-                    code = operatorFound.codeRemaining;
+                if(isOperator(ref code))
+                {
                     Console.WriteLine("Operator found");
                     continue;
                 }
 
                 // Check if the character is an statement
-                var statementFound = isStatement(code);
-                if (statementFound.statementFound)
+                if (isStatement(ref code))
                 {
-                    code = statementFound.codeRemaining;
                     Console.WriteLine("Statement found");
                     continue;
                 }
@@ -58,34 +55,36 @@ namespace Interpreter{
             }
         }
 
-        public List<Token> getTokenList(){
+        public List<Token> getTokenList()
+        {
             return tokenList;
         }
 
-        private (bool operatorFound, string codeRemaining) isOperator( string code){
-            if(code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*'){
-                return (operatorFound: true, codeRemaining: code.Substring(1));
+        private bool isOperator( ref string code)
+        {
+            if(code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*')
+            {
+                code = code.Substring(1);
+                return true;
             }
-            return (operatorFound: false, codeRemaining: null);
+            return false;
         }
 
-        private (bool statementFound, string codeRemaining) isStatement(string code)
+        private bool isStatement(ref string code)
         {
             if (code.Length >= 2 && code.Substring(0,2) == "if")
             {
-                return (statementFound: true, codeRemaining: code.Substring(2));
+                code = code.Substring(2);
+                return true;
             }
             if (code.Length >= 5 && code.Substring(0, 5) == "else")
             {
-                return (statementFound: true, codeRemaining: code.Substring(5));
+                code = code.Substring(5);
+                return true;
             }
 
-            return (statementFound: false, codeRemaining: null);
+            return false;
         }
-
-        //private TokenTypes findType(string tok){
-
-        //}
     }
 }
 
