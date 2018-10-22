@@ -2,9 +2,9 @@ namespace Interpreter{
     public enum TokenTypes
     {
         assignment = 0,
-        conditional = 1,
+        statement = 1,
         identity = 2,
-        expression = 3,
+        expression = 3, //Operator, but operator is a reserveword
         eof = 4,
     }
     class Token{

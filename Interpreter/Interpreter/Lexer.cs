@@ -17,13 +17,6 @@ namespace Interpreter{
         private List<Token> tokenList = new List<Token>();
         private string sourceCode = string.Empty;
 
-        /* 
-         * The regex is me trying a different way of tokenising, I was trying to see if we could not rely on whitespace but it's much easier using whitespace as delim due to syntax complexity
-         * Could probably use regex to categorise tokens or possibly implement a "smarter" lexer later on, for now though this should work pretty well
-         */
-
-        //private Regex regex = new Regex(@"AND|&|and|&&|OR|or|\|\||PLUS|\+|plus|add|ADD|\-|minus|sub|SUB|then|THEN|>|greater than|gt|greaterthan");
-
 
         public Lexer(string sourceCode){
             this.sourceCode = sourceCode;
@@ -64,6 +57,14 @@ namespace Interpreter{
         {
             if(code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*')
             {
+                Token tok = new Token()
+                {
+                    token = code.Substring(0,1),
+                    type = TokenTypes.expression
+                };
+
+                this.tokenList.Add(tok);
+
                 code = code.Substring(1);
                 return true;
             }
@@ -74,11 +75,25 @@ namespace Interpreter{
         {
             if (code.Length >= 2 && code.Substring(0,2) == "if")
             {
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 2),
+                    type = TokenTypes.statement,
+                };
+                this.tokenList.Add(tok);
+
                 code = code.Substring(2);
                 return true;
             }
             if (code.Length >= 5 && code.Substring(0, 5) == "else")
             {
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 5),
+                    type = TokenTypes.statement,
+                };
+                this.tokenList.Add(tok);
+
                 code = code.Substring(5);
                 return true;
             }
@@ -87,6 +102,14 @@ namespace Interpreter{
         }
     }
 }
+
+
+/* 
+         * The regex is me trying a different way of tokenising, I was trying to see if we could not rely on whitespace but it's much easier using whitespace as delim due to syntax complexity
+         * Could probably use regex to categorise tokens or possibly implement a "smarter" lexer later on, for now though this should work pretty well
+         */
+
+//private Regex regex = new Regex(@"AND|&|and|&&|OR|or|\|\||PLUS|\+|plus|add|ADD|\-|minus|sub|SUB|then|THEN|>|greater than|gt|greaterthan");
 
 
 
