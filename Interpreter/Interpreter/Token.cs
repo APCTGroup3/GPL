@@ -8,7 +8,7 @@ namespace Interpreter{
         constant = 4,
         eof = 5,
     }
-    class Token{
+    public class Token{
         public TokenTypes type;
         public int lineNumber;
         public string token;

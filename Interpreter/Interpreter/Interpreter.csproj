@@ -36,6 +36,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="Parser\Ops\BinaryOp.cs" />
+    <Compile Include="Parser\Node.cs" />
+    <Compile Include="Parser\UnaryNode.cs" />
+    <Compile Include="Parser\ParserException.cs" />
+    <Compile Include="Parser\Ops\TerminalNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Parser\" />
+    <Folder Include="Parser\Ops\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

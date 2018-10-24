@@ -1,64 +1,86 @@
-<expression> ::= <value> <operator> <value>
+!----------------------
+! Pseudo language grammar
+! ---------------------
 
-<operator> ::= <
-           |  lt
-           |  lessthan
-           |  <
-           |  lte
-           |  lessthanequal
-           |  <=
-           |  gt
-           |  greaterthan
-           |  >
-           |  gte
-           |  greaterthanequal
-           |  >=
-           |  add
-           |  +
-           |  subtract
-           |  sub
-           |  -
-           |  mult
-           |  multiply
-           |  *
-           |  div
-           |  divide
-           |  /
+"Name"     = 'Pseudogrammar'
+"Author"   = 'Liam Self'
+"Version"  = '0.1'
 
-<value> ::= <digit> | { <digit> }
+"Case Sensitive" = 'True'
+"Start Symbol" = <Statements>
+               
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
 
-<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+{WS}           = {Whitespace} - {CR} - {LF}
+{ID Head}      = {Letter}
+{ID Tail}      = {Alphanumeric} + [_]
+{String Chars} = {Printable} + {HT} - ["]
 
-<character> ::= A | B | C | E | G | H | J | K | L | M | N | P | R | S | T | V | W | X | Y | Z 
-              | a | b | c | e | g | h | j | k | l | m | n | p | r | s | t | v | w | x | y | z
+! -------------------------------------------------
+! Terminals
+! -------------------------------------------------
 
-<ident> ::= <character> | digit { character | digit }
+! The following defines the Whitespace terminal using the {WS}
+! set - which excludes the carriage return and line feed 
+! characters
+
+Whitespace    = {WS}+
+NewLine       = {CR}{LF} | {CR} | {LF}
+
+Identifier    = {ID Head}{ID Tail}*
+StringLiteral = '"' {String Chars}* '"'
+              
+Integer = {Number}+
+Real    = {Number}+ '.' {Number}+
+Boolean = 'True'|'False'
+
+! -------------------------------------------------
+! Rules
+! -------------------------------------------------
 
 <Statements> ::= <Statement> NewLine <Statements>
                | <Statement>
                | NewLine <Statement>
 
-<Statement> ::= <if>
-               | <while>
-               | <assignment>
+<Statement> ::= <OptionalExpression>
 
-<assignment> ::= <ident> <assign> <Const>
+! ================================================
+! MATHEMATICAL EXPRESSIONS
+! Following C-like orders of precedence
+! ================================================
+
+<OptionalExpression> ::= <Expression>
+                       | 
 
 <ExpressionList> ::= <Expression> ',' <ExpressionList>
                    | <Expression>
 
-<Expression> ::= <AndExpression> OR <Expression>
-               | <AndExpression>
+<Expression> ::= <OrExpression> '+=' <Expression>
+               | <OrExpression> '-=' <Expression>
+               | <OrExpression> '*=' <Expression>
+               | <OrExpression> '/=' <Expression>
+               | <OrExpression>
 
-<AndExpression> ::= <NotExpression> AND <AndExpression>
+<OrExpression> ::= <AndExpression> 'OR' <Expression>
+                 | <AndExpression> '||' <Expression>
+                 | <AndExpression>
+
+
+<AndExpression> ::= <NotExpression> 'AND' <AndExpression>
+                  | <NotExpression> '&&' <AndExpression>
                   | <NotExpression>
 
-<NotExpression> ::= <NotOperator> <ComparisonExpression>
-                  | <ComparisonExpression>
+<NotExpression> ::= '!' <EqualityExpression>
+                  | 'NOT'
+                  | <EqualityExpression>
 
-<ComparisonExpression> ::= <AddExpression> '=' <ComparisonExpression>
-                         | <AddExpression> '!=' <ComparisonExpression>
-                         | <AddExpression> '<' <ComparisonExpression>
+<EqualityExpression> ::= <ComparisonExpression> '==' <EqualityExpression>
+                       | <ComparisonExpression> '!=' <ComparisonExpression>
+                       | <ComparisonExpression>
+
+<ComparisonExpression> ::= <AddExpression> '<' <ComparisonExpression>
                          | <AddExpression> 'lt' <ComparisonExpression>
                          | <AddExpression> 'lessthan' <ComparisonExpression>
                          | <AddExpression> '<=' <ComparisonExpression>
@@ -79,32 +101,27 @@
                   | <MultiExpression> 'subtract' <AddExpression>
                   | <MultiExpression>
 
-<MultiExpression> ::= <NegativeExpression> '*' <MultiExpression>
-                    | <NegativeExpression> 'mult' <MultiExpression>
-                    | <NegativeExpression> 'multiply' <MultiExpression>
-                    | <NegativeExpression> '/' <MultiExpression>
-                    | <NegativeExpression> 'div' <MultiExpression>
-                    | <NegativeExpression> 'divide' <MultiExpression>
-                    | <NegativeExpression>
+<MultiExpression> ::= <PowerExpression> '*' <MultiExpression>
+                    | <PowerExpression> 'mult' <MultiExpression>
+                    | <PowerExpression> 'multiply' <MultiExpression>
+                    | <PowerExpression> '/' <MultiExpression>
+                    | <PowerExpression> 'div' <MultiExpression>
+                    | <PowerExpression> 'divide' <MultiExpression>
+                    | <PowerExpression>
 
-<NegativeExpression> ::= '-' <PowerExpression>
-                       | <PowerExpression>
 
-<PowerExpression> ::= <PowerExpression> '^' <ExpValue>
+<PowerExpression> ::= <ExpValue> '^' <PowerExpression>
                     | <ExpValue>
 
 <ExpValue> ::= '(' <Expression> ')'
-             | <ident>
-             | <ident> '(' <ExpressionList> ')'
-             | <Const>
+             | Identifier   '(' <ExpressionList> ')'
+             | <NegValue>
+             
+<NegValue> ::= '-' <Const>
+            | <Const>
 
 <Const> ::= Integer
           | String
           | Real
           | Boolean
-
-<Integer> ::= <digit> <Integer>
-<String> ::= <character> <String>
-<Real> ::= <Integer> '.' <Integer>
-<Boolean> ::= true
-            | false
+          | Identifier
