@@ -23,7 +23,7 @@ namespace Interpreter{
 
         private bool isOperator(ref string code, int lineNum)
         {
-            if (code[0] == '>' || code[0] == '<' || code[0] == '+' ||(code[0] == '-' && code[1] > '9') || code[0] == '/' || code[0] == '*' || code[0] == '.' || code[0] == '^')
+            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count-1].type != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
@@ -61,57 +61,89 @@ namespace Interpreter{
         }
 
         private bool isConstant(ref string code, int lineNum){
-            if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
+            //if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
+            //{
+            //    // Negative number
+            //    // Create a new token with the correct type and the part of the source code it is scanning
+            //    Token tok = new Token()
+            //    {
+            //        token = code.Substring(0, 2),
+            //        type = TokenTypes.constant,
+            //        lineNumber = lineNum
+            //    };
+
+            //    this.tokenList.Add(tok);
+
+            //    //Remove the token from the source code
+            //    code = code.Substring(1);
+            //    return true;
+            //}
+
+            if (code[0] == '.' && tokenList[tokenList.Count - 1].type == TokenTypes.constant)
             {
-                // Negative number
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
+                Token tok = tokenList[tokenList.Count - 1];
+                tok.token += '.';
+
+                int i = 1;
+                while (i <= code.Length && isDigit(code[i]))
                 {
-                    token = code.Substring(0, 2),
-                    type = TokenTypes.constant,
-                    lineNumber = lineNum
-                };
+                    tok.token += code[i];
 
+                    i++;
+                }
+                this.tokenList.RemoveAt(tokenList.Count - 1);
                 this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(1);
+                code = code.Substring(i);
                 return true;
             }
 
-            if ( (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
-            {
-                // is a digit
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 2),
-                    type = TokenTypes.constant,
-                    lineNumber = lineNum
-                };
+            //if ( code.Length > 2 && (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
+            //{
+            //    // is a digit
+            //    // Create a new token with the correct type and the part of the source code it is scanning
+            //    Token tok = new Token()
+            //    {
+            //        token = code.Substring(0, 2),
+            //        type = TokenTypes.constant,
+            //        lineNumber = lineNum
+            //    };
 
-                this.tokenList.Add(tok);
-                code = code.Substring(3);
-                return true;
-            }
+            //    this.tokenList.Add(tok);
+            //    code = code.Substring(3);
+            //    return true;
+            //}
 
             if (code[0] >= '0' && code[0] <= '9')
             {
+                String num = string.Empty;
+                int i = 0;
+                while(i < code.Length && isDigit(code[i])){
+                    i++;
+                }
+
                 // is a digit
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
                 {
-                    token = code.Substring(0, 1),
+                    token = code.Substring(0, i),
                     type = TokenTypes.constant,
                     lineNumber = lineNum
                 };
 
                 this.tokenList.Add(tok);
-                code = code.Substring(1);
+                code = code.Substring(i);
                 return true;
             }
 
             return false;
+        }
+
+        private bool isDigit(char code){
+            if(code >= '0' && code <= '9'){
+                return true;
+            } else{
+                return false;
+            }
         }
 
         private bool isStatement(ref string code, int lineNum)
@@ -167,7 +199,7 @@ namespace Interpreter{
             int charNum = 0;
             int lineNum = 0;
 
-            while(code.Length > 0){
+            while(code != string.Empty){
 
                 Console.WriteLine(code);
 

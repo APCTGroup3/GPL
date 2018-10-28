@@ -222,7 +222,7 @@ namespace Interpreter.Parser
             return false;
         }
 
-        void PrintTree(Node ast)
+        public void PrintTree(Node ast)
         {
             PrintTree(ast, 0);
         }

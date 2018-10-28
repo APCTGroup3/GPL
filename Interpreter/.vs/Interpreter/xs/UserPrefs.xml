@@ -1,9 +1,9 @@
 ﻿<Properties StartupConfiguration="{1A7FE083-C4DE-4993-A659-B6C1EA49DDAE}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Interpreter/Lexer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Interpreter/Parser/Parser.cs">
     <Files>
-      <File FileName="Interpreter/Program.cs" Line="14" Column="71" />
-      <File FileName="Interpreter/Lexer.cs" Line="99" Column="14" />
-      <File FileName="Interpreter/Token.cs" Line="5" Column="18" />
+      <File FileName="Interpreter/Program.cs" Line="17" Column="107" />
+      <File FileName="Interpreter/Lexer.cs" Line="114" Column="16" />
+      <File FileName="Interpreter/Parser/Parser.cs" Line="248" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
