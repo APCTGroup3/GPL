@@ -57,28 +57,27 @@ namespace Interpreter{
                 return true;
             }
 
+            if (code.Length >=4 && (code.Substring(0, 4) == "plus"))
+            {
+                // Create a new token with the correct type and the part of the source code it is scanning
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 4),
+                    type = TokenTypes.op,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+
+                //Remove the token from the source code
+                code = code.Substring(4);
+                return true;
+            }
+
             return false;
         }
 
         private bool isConstant(ref string code, int lineNum){
-            //if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
-            //{
-            //    // Negative number
-            //    // Create a new token with the correct type and the part of the source code it is scanning
-            //    Token tok = new Token()
-            //    {
-            //        token = code.Substring(0, 2),
-            //        type = TokenTypes.constant,
-            //        lineNumber = lineNum
-            //    };
-
-            //    this.tokenList.Add(tok);
-
-            //    //Remove the token from the source code
-            //    code = code.Substring(1);
-            //    return true;
-            //}
-
             if (code[0] == '.' && tokenList[tokenList.Count - 1].type == TokenTypes.constant)
             {
                 Token tok = tokenList[tokenList.Count - 1];
@@ -97,25 +96,8 @@ namespace Interpreter{
                 return true;
             }
 
-            //if ( code.Length > 2 && (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
-            //{
-            //    // is a digit
-            //    // Create a new token with the correct type and the part of the source code it is scanning
-            //    Token tok = new Token()
-            //    {
-            //        token = code.Substring(0, 2),
-            //        type = TokenTypes.constant,
-            //        lineNumber = lineNum
-            //    };
-
-            //    this.tokenList.Add(tok);
-            //    code = code.Substring(3);
-            //    return true;
-            //}
-
             if (code[0] >= '0' && code[0] <= '9')
             {
-                String num = string.Empty;
                 int i = 0;
                 while(i < code.Length && isDigit(code[i])){
                     i++;
@@ -138,12 +120,63 @@ namespace Interpreter{
             return false;
         }
 
-        private bool isDigit(char code){
+
+        private bool isDigit(char code)
+        {
             if(code >= '0' && code <= '9'){
                 return true;
             } else{
                 return false;
             }
+        }
+
+
+        private bool isIdent(ref string code, int lineNum)
+        {
+
+            if (isLetter(code[0]))
+            {
+
+                int i = 0;
+                while (i < code.Length && isLetter(code[i]))
+                {
+                    i++;
+                }
+
+                // is an identity
+                // Create a new token with the correct type and the part of the source code it is scanning
+
+                string idStr = code.Substring(0, i);
+
+                foreach(Token t in this.tokenList){ //O(n) search, could do binary to improve performance
+                    if(t.token == idStr)
+                    {
+                        //Token has been used before
+                    }
+                }
+
+                Token tok = new Token()
+                {
+                    token = idStr,
+                    type = TokenTypes.identity,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+                code = code.Substring(i);
+                return true;
+
+            }
+            return false;
+        }
+
+        private bool isLetter(char code)
+        {
+            if( (code >= 'a' && code <= 'z') || (code >= 'A' && code <= 'Z') )
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool isStatement(ref string code, int lineNum)
@@ -221,6 +254,12 @@ namespace Interpreter{
                 if (this.isConstant(ref code, lineNum))
                 {
                     Console.WriteLine("Constant found on line " + lineNum);
+                    continue;
+                }
+                // Check if the character is a constant
+                if (this.isIdent(ref code, lineNum))
+                {
+                    Console.WriteLine("Identity found on line " + lineNum);
                     continue;
                 }
 

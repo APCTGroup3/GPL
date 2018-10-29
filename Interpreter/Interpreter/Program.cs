@@ -8,12 +8,15 @@ namespace Interpreter
     {
         public static void Main(string[] args)
         {
-            string sourceCode = "(47.6^(4)*49)+59*43/(4-3)^2)";
+            string sourceCode = "47.3plus2";
             Lexer lexer = new Lexer(sourceCode);
             lexer.Tokenise();
             List<Token> tokenList = lexer.getTokenList();
             Console.WriteLine("Number of tokens: " + tokenList.Count);
 
+            Parser.Parser parser = new Parser.Parser();
+            Parser.Node ast = parser.Parse(tokenList);
+            parser.PrintTree(ast);
         }
     }
 

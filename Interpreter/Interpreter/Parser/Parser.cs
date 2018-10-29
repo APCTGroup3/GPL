@@ -147,48 +147,48 @@ namespace Interpreter.Parser
             }
         }
 
-        public static void Main(string[] args)
-        {
-            var parser = new Parser();
+        //public static void Main(string[] args)
+        //{
+        //    var parser = new Parser();
 
-            Lexer l = new Lexer("(453.6^4/3)+64-2.2^5");
-            l.Tokenise();
-            foreach (var token in l.getTokenList())
-            {
-                Console.Write("\"" + token.token + "\", " );
-            }
-            Console.Write("\n");
+        //    Lexer l = new Lexer("(453.6^4/3)+64-2.2^5");
+        //    l.Tokenise();
+        //    foreach (var token in l.getTokenList())
+        //    {
+        //        Console.Write("\"" + token.token + "\", " );
+        //    }
+        //    Console.Write("\n");
 
-            var tokens = new List<Token>(); //(47.6^(4)*49)+59*43/(4-3)^2
-            tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
-            tokens.Add(new Token() { token = "47.6", type=TokenTypes.constant });
-            tokens.Add(new Token() { token = "^", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
-            tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
-            tokens.Add(new Token() { token = "*", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "49", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = "+", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "59", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = "*", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "-", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "43", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = "/", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "(", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = "-", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "3", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = ")", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "^", type = TokenTypes.op });
-            tokens.Add(new Token() { token = "2", type = TokenTypes.constant });
-            tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
-
-
+        //    var tokens = new List<Token>(); //(47.6^(4)*49)+59*43/(4-3)^2
+        //    tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "47.6", type=TokenTypes.constant });
+        //    tokens.Add(new Token() { token = "^", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "*", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "49", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = "+", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "59", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = "*", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "-", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "43", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = "/", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "(", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = "-", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "3", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = ")", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "^", type = TokenTypes.op });
+        //    tokens.Add(new Token() { token = "2", type = TokenTypes.constant });
+        //    tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
 
 
-            var ast = parser.Parse(tokens);
-            parser.PrintTree(ast);
-        }
+
+
+        //    var ast = parser.Parse(tokens);
+        //    parser.PrintTree(ast);
+        //}
 
         private void Consume()
         {
