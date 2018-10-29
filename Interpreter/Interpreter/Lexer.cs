@@ -40,7 +40,7 @@ namespace Interpreter{
                 return true;
             }
 
-            if(code.Length > 2 && (code.Substring(0,2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">=") )
+            if(code.Length >= 2 && (code.Substring(0,2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">=") )
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
@@ -229,8 +229,8 @@ namespace Interpreter{
         public void Tokenise(){
             string code = this.sourceCode; //Probably should just pass code as param
 
-            int charNum = 0;
-            int lineNum = 0;
+            int charNum = 1;
+            int lineNum = 1;
 
             while(code != string.Empty){
 

@@ -1,0 +1,3 @@
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/bin/Release/Interpreter.exe
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/obj/x86/Release/Interpreter.csproj.CoreCompileInputs.cache
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/obj/x86/Release/Interpreter.exe

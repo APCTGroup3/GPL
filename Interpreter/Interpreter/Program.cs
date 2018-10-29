@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-//using Interpreter.Parser;
 
 namespace Interpreter
 {
@@ -8,15 +7,25 @@ namespace Interpreter
     {
         public static void Main(string[] args)
         {
-            string sourceCode = "47.3plus2";
+            string sourceCode = "hgtfsum gt";
             Lexer lexer = new Lexer(sourceCode);
             lexer.Tokenise();
             List<Token> tokenList = lexer.getTokenList();
-            Console.WriteLine("Number of tokens: " + tokenList.Count);
 
-            Parser.Parser parser = new Parser.Parser();
-            Parser.Node ast = parser.Parse(tokenList);
-            parser.PrintTree(ast);
+            Console.WriteLine("\nNumber of tokens: " + tokenList.Count);
+
+            Console.WriteLine("\n------------------------------\n\nTOKENS:\n");
+
+            foreach (Token tok in tokenList)
+            {
+                Console.WriteLine(tok.token);
+            }
+
+            //Console.WriteLine("\n------------------------------\n\nAST:\n");
+
+            //Parser.Parser parser = new Parser.Parser();
+            //Parser.Node ast = parser.Parse(tokenList);
+            //parser.PrintTree(ast);
         }
     }
 
