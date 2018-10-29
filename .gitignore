@@ -1,2 +1,14 @@
 Interpreter/*.exe
 *.exe
+Interpreter/Interpreter/Interpreter.csproj.user
+Interpreter/Interpreter/.vs/Interpreter/xs/UserPrefs.xml
+Interpreter/Interpreter/.vs/Interpreter/xs/sqlite3/db.lock
+Interpreter/Interpreter/.vs/Interpreter/xs/sqlite3/storage.ide
+Interpreter/Interpreter/.vs/Interpreter/xs/sqlite3/storage.ide-shm
+Interpreter/Interpreter/.vs/Interpreter/xs/sqlite3/storage.ide-wal
+Interpreter/Interpreter/ParserEngine/obj/ParserEngine.fsproj.nuget.cache
+Interpreter/Interpreter/ParserEngine/obj/ParserEngine.fsproj.nuget.g.props
+Interpreter/Interpreter/ParserEngine/obj/ParserEngine.fsproj.nuget.g.targets
+Interpreter/Interpreter/ParserEngine/obj/project.assets.json
+Interpreter/Interpreter/ParserEngine/obj/Debug/netcoreapp2.1/ParserEngine.assets.cache
+Interpreter/Interpreter/ParserEngine/obj/Debug/netcoreapp2.1/ParserEngine.fsprojAssemblyReference.cache
