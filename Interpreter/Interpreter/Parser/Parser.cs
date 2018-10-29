@@ -110,7 +110,7 @@ namespace Interpreter.Parser
                 }
                 else
                 {
-                    throw new ParserException("Expected ), found" + CurrentToken.token);
+                    throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected ), found" + CurrentToken.token);
                 }
             }
             else
@@ -137,7 +137,7 @@ namespace Interpreter.Parser
             var valid = CurrentToken.type == TokenTypes.constant;
             if (!valid)
             {
-                throw new ParserException("Expected factor; found" + CurrentToken.token);
+                throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected factor; found " + CurrentToken.token);
             } else
             {
                 var node = new TerminalNode(CurrentToken);
