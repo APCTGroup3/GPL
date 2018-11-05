@@ -123,7 +123,7 @@ namespace CoreParser.Parser
             {
                 var node = new UnaryNode(CurrentToken);
                 Consume();
-                node.Child = ParseFactor();
+                node.Child = ParseExpression();
                 return node;
             }
             else
