@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+
 namespace CoreParser
 {
 
@@ -64,24 +65,6 @@ namespace CoreParser
 
         private bool isConstant(ref string code, int lineNum)
         {
-            //if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
-            //{
-            //    // Negative number
-            //    // Create a new token with the correct type and the part of the source code it is scanning
-            //    Token tok = new Token()
-            //    {
-            //        token = code.Substring(0, 2),
-            //        type = TokenTypes.constant,
-            //        lineNumber = lineNum
-            //    };
-
-            //    this.tokenList.Add(tok);
-
-            //    //Remove the token from the source code
-            //    code = code.Substring(1);
-            //    return true;
-            //}
-
             if (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType == TokenTypes.constant)
             {
                 Token tok = tokenList[tokenList.Count - 1];
@@ -99,22 +82,6 @@ namespace CoreParser
                 code = code.Substring(i);
                 return true;
             }
-
-            //if ( code.Length > 2 && (code[0] >= '0' && code[0] <= '9') && code[1] == '.' && (code[2] >= '0' && code[2] <= '9'))
-            //{
-            //    // is a digit
-            //    // Create a new token with the correct type and the part of the source code it is scanning
-            //    Token tok = new Token()
-            //    {
-            //        token = code.Substring(0, 2),
-            //        type = TokenTypes.constant,
-            //        lineNumber = lineNum
-            //    };
-
-            //    this.tokenList.Add(tok);
-            //    code = code.Substring(3);
-            //    return true;
-            //}
 
             if (code[0] >= '0' && code[0] <= '9')
             {
@@ -152,6 +119,28 @@ namespace CoreParser
             {
                 return false;
             }
+        }
+
+        private bool isBoolean(ref string code, int lineNum)
+        {
+            if (code.Length > 4 && (code.Substring(0, 4) == "true" || code.Substring(0, 4) == "TRUE" || code.Substring(0, 4) == "false" || code.Substring(0, 4) == "FALSE"))
+            {
+                // Create a new token with the correct type and the part of the source code it is scanning
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 4),
+                    tokenType = TokenTypes.boolean,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+
+                //Remove the token from the source code
+                code = code.Substring(4);
+
+                return true;
+            }
+            return false;
         }
 
         private bool isStatement(ref string code, int lineNum)
