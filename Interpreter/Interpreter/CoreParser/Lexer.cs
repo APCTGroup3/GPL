@@ -2,9 +2,10 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-namespace Interpreter{
+namespace CoreParser
+{
 
-    class Lexer
+    public class Lexer
     {
         /* Interesting Links
 
@@ -23,13 +24,13 @@ namespace Interpreter{
 
         private bool isOperator(ref string code, int lineNum)
         {
-            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count-1].type != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
+            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count-1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 1),
-                    type = TokenTypes.op,
+                    tokenType = TokenTypes.op,
                     lineNumber = lineNum
                 };
 
@@ -46,7 +47,7 @@ namespace Interpreter{
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 2),
-                    type = TokenTypes.op,
+                    tokenType = TokenTypes.op,
                     lineNumber = lineNum
                 };
 
@@ -79,7 +80,7 @@ namespace Interpreter{
             //    return true;
             //}
 
-            if (code[0] == '.' && tokenList[tokenList.Count - 1].type == TokenTypes.constant)
+            if (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType == TokenTypes.constant)
             {
                 Token tok = tokenList[tokenList.Count - 1];
                 tok.token += '.';
@@ -126,7 +127,7 @@ namespace Interpreter{
                 Token tok = new Token()
                 {
                     token = code.Substring(0, i),
-                    type = TokenTypes.constant,
+                    tokenType = TokenTypes.constant,
                     lineNumber = lineNum
                 };
 
@@ -154,7 +155,7 @@ namespace Interpreter{
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 4),
-                    type = TokenTypes.statement,
+                    tokenType = TokenTypes.statement,
                     lineNumber = lineNum
                 };
 
@@ -171,7 +172,7 @@ namespace Interpreter{
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 2),
-                    type = TokenTypes.statement,
+                    tokenType = TokenTypes.statement,
                 };
 
                 this.tokenList.Add(tok);

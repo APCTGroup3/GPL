@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 //using Interpreter.Parser;
 
-namespace Interpreter
+namespace CoreParser
 {
     class MainClass
     {
