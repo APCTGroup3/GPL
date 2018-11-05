@@ -83,11 +83,11 @@ namespace CoreParser
                 return true;
             }
 
-            if (code[0] >= '0' && code[0] <= '9')
+            if (isDigit(code[0]))
             {
                 String num = string.Empty;
                 int i = 0;
-                while (i < code.Length && isDigit(code[i]))
+                while (i < code.Length && ( isDigit(code[i]) || code[i] == '.') )
                 {
                     i++;
                 }
