@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Interpreter{
 
@@ -201,26 +202,26 @@ namespace Interpreter{
 
             while(code != string.Empty){
 
-                Console.WriteLine(code);
+                Debug.WriteLine(code);
 
                 // Check if the character is an operator
                 if(this.isOperator(ref code, lineNum))
                 {
-                    Console.WriteLine("Operator found on line " + lineNum);
+                    Debug.WriteLine("Operator found on line " + lineNum);
                     continue;
                 }
 
                 // Check if the character is a statement
                 if (this.isStatement(ref code, lineNum))
                 {
-                    Console.WriteLine("Statement found on line " + lineNum);
+                    Debug.WriteLine("Statement found on line " + lineNum);
                     continue;
                 }
 
                 // Check if the character is a constant
                 if (this.isConstant(ref code, lineNum))
                 {
-                    Console.WriteLine("Constant found on line " + lineNum);
+                    Debug.WriteLine("Constant found on line " + lineNum);
                     continue;
                 }
 
