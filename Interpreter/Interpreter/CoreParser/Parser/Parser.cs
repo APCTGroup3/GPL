@@ -21,6 +21,31 @@ namespace CoreParser.Parser
 
         }
 
+        /****** NUMERIC EXPRESSIONS *******/
+        // Any mathematical expression that returns a number
+
+
+        private Node ParseEquality()
+        {
+            var left = ParseExpression();
+            if (Match(TokenTypes.op, "=="))
+            {
+                var node = new BinaryOp(CurrentToken);
+                node.Left = left;
+                Consume();
+                node.Right = ParseExpression();
+                return node;
+            }
+            else
+            {
+                return left;
+            }
+        }
+
+        private Node ParseExpression()
+        {
+            return ParseComparison();
+        }
 
         private Node ParseComparison()
         {
@@ -30,20 +55,13 @@ namespace CoreParser.Parser
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
-                node.Right = ParseComparison();
+                node.Right = ParseExpression();
                 return node;
             }
             else
             {
                 return left;
             }
-        }
-
-        /****** NUMERIC EXPRESSIONS *******/
-        // Any mathematical expression that returns a number
-        private Node ParseExpression()
-        {
-            return ParseAdd();
         }
 
         private Node ParseAdd()
@@ -138,14 +156,29 @@ namespace CoreParser.Parser
             if (!valid)
             {
                 throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected factor; found " + CurrentToken.token);
-            } else
+            } 
+            else
             {
                 var node = new TerminalNode(CurrentToken);
                 Consume();
-                return node;
-
+                return node;                   
             }
         }
+
+        private Node ParseBool()
+            {
+                var valid = CurrentToken.tokenType == TokenTypes.boolean;
+                if (!valid)
+                {
+                    throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected boolean; found " + CurrentToken.token);
+                }
+                else
+                {
+                    var node = new TerminalNode(CurrentToken);
+                    Consume();
+                    return node;
+                }
+            }
 
         //public static void Main(string[] args)
         //{

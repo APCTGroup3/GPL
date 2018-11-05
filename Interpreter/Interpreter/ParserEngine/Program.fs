@@ -2,9 +2,7 @@
 open CoreParser
 
 
-
-
-let interpret (node: CoreParser.Parser.Node) =
+let interpretExpression (node: CoreParser.Parser.Node) =
     let rec interpret_res (n1: CoreParser.Parser.Node) = 
         let tokentype = n1.Token.tokenType
         let tokenval = n1.Token.token
@@ -34,7 +32,7 @@ let rec main argv =
             let parser = new CoreParser.Parser.Parser()
             let node = parser.Parse(lexer.getTokenList())
             printfn "Input: %s" toparse
-            printfn "Result: %f" (interpret(node))
+            printfn "Result: %f" (interpretExpression(node))
             printfn "-----------------------------------------"
     with
         | _ as ex -> printfn "%s" (ex.Message)
