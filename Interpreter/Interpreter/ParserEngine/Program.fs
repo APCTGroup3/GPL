@@ -22,7 +22,7 @@ let interpretExpression (node: CoreParser.Parser.Node) =
 [<EntryPoint>]
 let rec main argv =
     try
-        printfn("Enter expression: ")
+        printfn("Enter expression (or type 'exit' to quit): ")
         let toparse = Console.ReadLine()
         if toparse = "exit" then
             Environment.Exit 1

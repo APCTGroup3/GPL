@@ -25,13 +25,13 @@ namespace CoreParser
 
         private bool isOperator(ref string code, int lineNum)
         {
-            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count-1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
+            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count - 1].type != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 1),
-                    tokenType = TokenTypes.op,
+                    type = TokenTypes.op,
                     lineNumber = lineNum
                 };
 
@@ -42,13 +42,13 @@ namespace CoreParser
                 return true;
             }
 
-            if(code.Length > 2 && (code.Substring(0,2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">=") )
+            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">="))
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 2),
-                    tokenType = TokenTypes.op,
+                    type = TokenTypes.op,
                     lineNumber = lineNum
                 };
 
@@ -62,7 +62,8 @@ namespace CoreParser
             return false;
         }
 
-        private bool isConstant(ref string code, int lineNum){
+        private bool isConstant(ref string code, int lineNum)
+        {
             //if (code[0] == '-' && (code[1] >= '0' && code[1] <= '9'))
             //{
             //    // Negative number
@@ -81,7 +82,7 @@ namespace CoreParser
             //    return true;
             //}
 
-            if (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType == TokenTypes.constant)
+            if (code[0] == '.' && tokenList[tokenList.Count - 1].type == TokenTypes.constant)
             {
                 Token tok = tokenList[tokenList.Count - 1];
                 tok.token += '.';
@@ -119,7 +120,8 @@ namespace CoreParser
             {
                 String num = string.Empty;
                 int i = 0;
-                while(i < code.Length && isDigit(code[i])){
+                while (i < code.Length && isDigit(code[i]))
+                {
                     i++;
                 }
 
@@ -128,7 +130,7 @@ namespace CoreParser
                 Token tok = new Token()
                 {
                     token = code.Substring(0, i),
-                    tokenType = TokenTypes.constant,
+                    type = TokenTypes.constant,
                     lineNumber = lineNum
                 };
 
@@ -140,10 +142,14 @@ namespace CoreParser
             return false;
         }
 
-        private bool isDigit(char code){
-            if(code >= '0' && code <= '9'){
+        private bool isDigit(char code)
+        {
+            if (code >= '0' && code <= '9')
+            {
                 return true;
-            } else{
+            }
+            else
+            {
                 return false;
             }
         }
@@ -156,7 +162,7 @@ namespace CoreParser
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 4),
-                    tokenType = TokenTypes.statement,
+                    type = TokenTypes.statement,
                     lineNumber = lineNum
                 };
 
@@ -173,7 +179,7 @@ namespace CoreParser
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 2),
-                    tokenType = TokenTypes.statement,
+                    type = TokenTypes.statement,
                 };
 
                 this.tokenList.Add(tok);
@@ -190,23 +196,26 @@ namespace CoreParser
 
         /* PUBLIC */
 
-        public Lexer(string sourceCode){
+        public Lexer(string sourceCode)
+        {
             this.sourceCode = sourceCode;
         }
 
 
-        public void Tokenise(){
+        public void Tokenise()
+        {
             string code = this.sourceCode; //Probably should just pass code as param
 
             int charNum = 0;
             int lineNum = 0;
 
-            while(code != string.Empty){
+            while (code != string.Empty)
+            {
 
                 Debug.WriteLine(code);
 
                 // Check if the character is an operator
-                if(this.isOperator(ref code, lineNum))
+                if (this.isOperator(ref code, lineNum))
                 {
                     Debug.WriteLine("Operator found on line " + lineNum);
                     continue;
@@ -227,10 +236,13 @@ namespace CoreParser
                 }
 
                 // Check for new line and increment line number
-                if (code.Length > 2 && code.Substring(0, 2) == "\n"){
+                if (code.Length > 2 && code.Substring(0, 2) == "\n")
+                {
                     lineNum++;
                     charNum = 0;
-                } else {
+                }
+                else
+                {
                     // Don't bother incrementing character number if line number is updating
                     charNum++;
                 }
