@@ -7,6 +7,7 @@ namespace Interpreter{
         op = 3, //Operator, but operator is a reserveword
         constant = 4,
         eof = 5,
+        boolean = 6,
     }
     public class Token{
         public TokenTypes type;
