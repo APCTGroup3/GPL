@@ -47,6 +47,8 @@ namespace CoreParser.Parser
             return ParseComparison();
         }
 
+
+
         private Node ParseComparison()
         {
             var left = ParseAdd();
@@ -55,7 +57,7 @@ namespace CoreParser.Parser
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
-                node.Right = ParseExpression();
+                node.Right = ParseAdd();
                 return node;
             }
             else

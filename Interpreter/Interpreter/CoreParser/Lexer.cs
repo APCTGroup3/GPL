@@ -26,6 +26,23 @@ namespace CoreParser
 
         private bool isOperator(ref string code, int lineNum)
         {
+            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">="))
+            {
+                // Create a new token with the correct type and the part of the source code it is scanning
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, 2),
+                    tokenType = TokenTypes.op,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+
+                //Remove the token from the source code
+                code = code.Substring(2);
+                return true;
+            }
+
             if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
@@ -43,22 +60,7 @@ namespace CoreParser
                 return true;
             }
 
-            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">="))
-            {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 2),
-                    tokenType = TokenTypes.op,
-                    lineNumber = lineNum
-                };
 
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(2);
-                return true;
-            }
 
             return false;
         }
@@ -98,6 +100,7 @@ namespace CoreParser
                 {
                     token = code.Substring(0, i),
                     tokenType = TokenTypes.constant,
+                    constType = ConstTypes.number,
                     lineNumber = lineNum
                 };
 
@@ -129,7 +132,8 @@ namespace CoreParser
                 Token tok = new Token()
                 {
                     token = code.Substring(0, 4),
-                    tokenType = TokenTypes.boolean,
+                    tokenType = TokenTypes.constant,
+                    constType = ConstTypes.boolean,
                     lineNumber = lineNum
                 };
 

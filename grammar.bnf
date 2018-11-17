@@ -112,13 +112,14 @@ Boolean = 'True'|'False'
 
 <PowerExpression> ::= <ExpValue> '^' <PowerExpression>
                     | <ExpValue>
+             
+<NegValue> ::= '-' <Expression>
+            | <Const>
 
 <ExpValue> ::= '(' <Expression> ')'
              | Identifier   '(' <ExpressionList> ')'
              | <NegValue>
-             
-<NegValue> ::= '-' <Const>
-            | <Const>
+
 
 <Const> ::= Integer
           | String
