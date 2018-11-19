@@ -34,3 +34,8 @@ module Types =
         inherit Terminal("String")
         member this.Value = value
         override this.ToString = this.Value.ToString()
+
+    type Void() =
+        inherit Terminal("Void")
+        member this.Value = ""
+        override this.ToString = ""

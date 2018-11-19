@@ -16,7 +16,7 @@ namespace CoreParser.Parser
             Tokens = tokens;
             pos = 0;
 
-            AST = ParseExpression();
+            AST = ParseAssignment();
             return AST;
 
         }
@@ -25,28 +25,74 @@ namespace CoreParser.Parser
         // Any mathematical expression that returns a number
 
 
+        private Node ParseAssignment()
+        {
+            if (CurrentToken.tokenType == TokenTypes.identity)
+            {
+                try
+                {
+                    if (Tokens[pos + 1].tokenType == TokenTypes.op && Tokens[pos + 1].token.Equals("="))
+                    {
+                        var id = ParseVarName();
+                        Consume();
+                        var node = new Assignment(CurrentToken);
+                        Consume();
+                        var value = ParseExpression();
+                        node.ID = id;
+                        node.Value = value;
+                        return node;
+                    }
+                    else
+                    {
+                        return ParseExpression();
+                    }
+                } catch (Exception e)
+                {
+                    return ParseExpression();
+                }
+            }
+            else
+            {
+                return ParseEquality();
+            }
+        }
+
+        private Node ParseVarName()
+        {
+            var valid = CurrentToken.tokenType == TokenTypes.identity;
+            if (!valid)
+            {
+                throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected identifier; found " + CurrentToken.token);
+            }
+            else
+            {
+                var node = new TerminalNode(CurrentToken);
+                return node;
+            }
+        }
+
+        private Node ParseExpression()
+        {
+            return ParseEquality();
+        }
+
         private Node ParseEquality()
         {
-            var left = ParseExpression();
-            if (Match(TokenTypes.op, "=="))
+            var left = ParseComparison();
+            if (Match(TokenTypes.op, "==", "eq", "equals", "!=", "neq", "notequ"))
             {
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
-                node.Right = ParseExpression();
+                node.Right = ParseComparison();
                 return node;
             }
             else
             {
                 return left;
             }
-        }
 
-        private Node ParseExpression()
-        {
-            return ParseComparison();
         }
-
 
 
         private Node ParseComparison()
@@ -154,16 +200,21 @@ namespace CoreParser.Parser
 
         private Node ParseFactor()
         {
-            var valid = CurrentToken.tokenType == TokenTypes.constant;
-            if (!valid)
-            {
-                throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected factor; found " + CurrentToken.token);
-            } 
-            else
+            if (CurrentToken.tokenType == TokenTypes.constant)
             {
                 var node = new TerminalNode(CurrentToken);
                 Consume();
+                return node;  
+            } 
+            else if (CurrentToken.tokenType == TokenTypes.identity)
+            {
+                var node = new Variable(CurrentToken);
+                Consume();
                 return node;                   
+            }
+            else
+            {
+                throw new ParserException("Line " + CurrentToken.lineNumber + ": Unexpected value; found " + CurrentToken.token);
             }
         }
 

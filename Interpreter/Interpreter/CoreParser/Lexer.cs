@@ -24,9 +24,11 @@ namespace CoreParser
         private string sourceCode = string.Empty;
 
 
+
+
         private bool isOperator(ref string code, int lineNum)
         {
-            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">="))
+            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">=" || code.Substring(0, 2) == "==" || code.Substring(0, 2) == "!="))
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
@@ -43,7 +45,7 @@ namespace CoreParser
                 return true;
             }
 
-            if (code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
+            if (code[0] == '=' || code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
             {
                 // Create a new token with the correct type and the part of the source code it is scanning
                 Token tok = new Token()
@@ -106,6 +108,38 @@ namespace CoreParser
 
                 this.tokenList.Add(tok);
                 code = code.Substring(i);
+                return true;
+            }
+
+            if (Char.IsLetter(code[0]))
+            {
+                //Else assume variable or keyword for now, delimit by space
+                String chars = "";
+                int length = 0;
+                bool stop = false;
+                while (length < code.Length && !stop)
+                {
+                    if (!Char.IsWhiteSpace(code[length]))
+                    {
+                        chars += code[length];
+                        length++;
+                    }
+                    else
+                    {
+                        stop = true;
+                    }
+                }
+                var tok = new Token()
+                {
+                    token = chars,
+                    tokenType = TokenTypes.identity,
+                    lineNumber = lineNum
+                };
+
+                this.tokenList.Add(tok);
+                code = code.Substring(length);
+
+
                 return true;
             }
 

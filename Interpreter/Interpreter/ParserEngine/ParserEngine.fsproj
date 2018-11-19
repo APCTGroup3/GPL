@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <None Include="Script.fsx" />
+    <Compile Include="Context.fs" />
     <ProjectReference Include="..\CoreParser\CoreParser.csproj" />
     <Compile Include="Engine.fs" />
     <Compile Include="Program.fs" />
