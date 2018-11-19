@@ -87,6 +87,29 @@ namespace CoreParser
                 return true;
             }
 
+            if (code[0] == '"' | code[0] == '\'' ) //string literal
+            {
+                char delimiter = code[0];
+                string str = "";
+                int i = 1;
+                while (code[i] != delimiter)
+                {
+                    str += code[i];
+                    i++;
+                }
+                var tok = new Token()
+                {
+                    token = code.Substring(1, i - 1),
+                    tokenType = TokenTypes.constant,
+                    constType = ConstTypes.str,
+                    lineNumber = lineNum
+                };
+
+                tokenList.Add(tok);
+                code = code.Substring(i + 1);
+                return true;
+            }
+
             if (isDigit(code[0]))
             {
                 String num = string.Empty;

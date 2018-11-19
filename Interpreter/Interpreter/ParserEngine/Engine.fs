@@ -18,7 +18,7 @@ module Engine =
             let value : Terminal = match tokenType with
                                    | ConstTypes.number -> new Number(Double.Parse(rawVal)) :> Terminal
                                    | ConstTypes.boolean -> new Boolean(bool.Parse(rawVal)) :> Terminal
-                                   | ConstTypes.str -> new String(rawVal) :> Terminal
+                                   | ConstTypes.str -> new Str(rawVal) :> Terminal
             value
 
         member this.Visit_UnaryOp (node: CoreParser.Parser.Node) : Terminal =
@@ -43,6 +43,8 @@ module Engine =
                 match op with
                 | "+" -> match (leftEval, rightEval) with
                           | (:? Number, :? Number) -> new Number(leftEval.ToDouble() + rightEval.ToDouble()) :> Terminal
+                          | (:? Str, _) -> new Str(String.concat "" [leftEval.ToString; rightEval.ToString]) :> Terminal
+                          | ( _, :? Str) -> new Str(String.concat "" [leftEval.ToString; rightEval.ToString]) :> Terminal
                           | _ -> failwithf "Operator %s is not compatible with types (%s, %s)" op leftEval.TypeName rightEval.TypeName
                 | "-" -> match (leftEval, rightEval) with
                           | (:? Number, :? Number) -> new Number(leftEval.ToDouble() - rightEval.ToDouble()) :> Terminal
@@ -71,12 +73,12 @@ module Engine =
                 | "==" -> match (leftEval, rightEval) with
                           | (:? Number, :? Number) -> new Boolean(leftEval.ToDouble() = rightEval.ToDouble()) :> Terminal
                           | (:? Boolean, :? Boolean) -> new Boolean(leftEval.ToBool() = rightEval.ToBool()) :> Terminal
-                          | (:? String, :? String) -> new Boolean(leftEval.ToString = rightEval.ToString) :> Terminal
+                          | (:? Str, :? Str) -> new Boolean(leftEval.ToString = rightEval.ToString) :> Terminal
                           | _ -> failwithf "Operator %s is not compatible with types (%s, %s)" op leftEval.TypeName rightEval.TypeName
                 | "!=" -> match (leftEval, rightEval) with
                           | (:? Number, :? Number) -> new Boolean(leftEval.ToDouble() <> rightEval.ToDouble()) :> Terminal
                           | (:? Boolean, :? Boolean) -> new Boolean(leftEval.ToBool() <> rightEval.ToBool()) :> Terminal
-                          | (:? String, :? String) -> new Boolean(leftEval.ToString <> rightEval.ToString) :> Terminal
+                          | (:? Str, :? Str) -> new Boolean(leftEval.ToString <> rightEval.ToString) :> Terminal
                           | _ -> failwithf "Operator %s is not compatible with types (%s, %s)" op leftEval.TypeName rightEval.TypeName
                 | _ -> failwithf "Unknown operator %s" op
             value

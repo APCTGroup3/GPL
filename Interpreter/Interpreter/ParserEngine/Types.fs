@@ -30,7 +30,7 @@ module Types =
 
         override this.ToString = this.Value.ToString()
 
-    type String(value: string) =
+    type Str(value: string) =
         inherit Terminal("String")
         member this.Value = value
         override this.ToString = this.Value.ToString()
