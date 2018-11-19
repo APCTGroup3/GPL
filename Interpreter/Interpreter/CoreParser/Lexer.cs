@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 
 namespace CoreParser
@@ -152,12 +153,38 @@ namespace CoreParser
                         stop = true;
                     }
                 }
-                var tok = new Token()
+
+                //Is boolean?
+                Token tok;
+                if (new String[]{"TRUE"}.Contains(chars.ToUpper()))
                 {
-                    token = chars,
-                    tokenType = TokenTypes.identity,
-                    lineNumber = lineNum
-                };
+                    tok = new Token()
+                    {
+                        token = "true",
+                        tokenType = TokenTypes.constant,
+                        constType = ConstTypes.boolean,
+                        lineNumber = lineNum
+                    };
+                } 
+                else if (new String[] { "FALSE" }.Contains(chars.ToUpper()))
+                {
+                    tok = new Token()
+                    {
+                        token = "false",
+                        tokenType = TokenTypes.constant,
+                        constType = ConstTypes.boolean,
+                        lineNumber = lineNum
+                    };
+                }
+                else
+                {
+                    tok = new Token()
+                    {
+                        token = chars,
+                        tokenType = TokenTypes.identity,
+                        lineNumber = lineNum
+                    };
+                }
 
                 this.tokenList.Add(tok);
                 code = code.Substring(length);
