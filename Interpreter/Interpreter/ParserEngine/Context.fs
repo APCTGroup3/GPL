@@ -1,7 +1,6 @@
 ﻿namespace ParserEngine
 module Context =
     open System
-    open Types
     open System.Collections.Generic
     open CoreParser
 
@@ -10,7 +9,7 @@ module Context =
 
         member this.Store (id: string, var: Terminal) =
             if varStore.ContainsKey(id) then do
-                varStore.Remove(id)
+                varStore.Remove(id) |> ignore
             varStore.Add(id, var)
 
         member this.Get (id: string) =

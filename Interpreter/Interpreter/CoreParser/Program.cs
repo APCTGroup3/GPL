@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoreParser.Parser.AST;
 //using Interpreter.Parser;
 
 namespace CoreParser
@@ -15,7 +16,7 @@ namespace CoreParser
             Console.WriteLine("Number of tokens: " + tokenList.Count);
 
             Parser.Parser parser = new Parser.Parser();
-            Parser.Node ast = parser.Parse(tokenList);
+            Parser.AST.Node ast = parser.Parse(tokenList);
             parser.PrintTree(ast);
         }
     }

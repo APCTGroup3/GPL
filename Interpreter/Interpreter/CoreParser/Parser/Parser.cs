@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoreParser.Parser.Ops;
+using CoreParser.Parser.AST;
 
 namespace CoreParser.Parser
 {

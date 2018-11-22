@@ -2,6 +2,8 @@
 module Program =
     open System
     open Engine
+    open CoreParser
+    open CoreParser.Parser
 
     [<EntryPoint>]
     let rec main argv =
@@ -18,8 +20,11 @@ module Program =
                     lexer.Tokenise()
                     let parser = new CoreParser.Parser.Parser()
                     let node = parser.Parse(lexer.getTokenList())
+
+                    let start = Test.GetStart()
+
                     printfn "Input: %s" toparse
-                    printfn "Result: %s" (engine.Run(node)).ToString
+                    printfn "Result: %s" (engine.Run(start).ToStr())
                     printfn "-----------------------------------------"
             with
                 | _ as ex -> printfn "%s" (ex.Message)

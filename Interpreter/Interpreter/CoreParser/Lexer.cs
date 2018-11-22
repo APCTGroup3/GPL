@@ -21,6 +21,8 @@ namespace CoreParser
 
         /* PRIVATE */
 
+
+
         private List<Token> tokenList = new List<Token>();
         private string sourceCode = string.Empty;
 
