@@ -25,8 +25,8 @@ namespace CoreParser
 
         private List<Token> tokenList = new List<Token>();
         private string sourceCode = string.Empty;
-
-
+        List<char> reserveChars = new List<char>(new char[] { '.', '+', '<', '>', '=', '-', '/', '%' });
+        //private List<string> reserveChars = new List<string>{ ".", "+", "<", ">", "=", "==", "-", "/", "%" };
 
 
         private bool isOperator(ref string code, int lineNum)
@@ -137,63 +137,63 @@ namespace CoreParser
                 return true;
             }
 
-            if (Char.IsLetter(code[0]))
-            {
-                //Else assume variable or keyword for now, delimit by space
-                String chars = "";
-                int length = 0;
-                bool stop = false;
-                while (length < code.Length && !stop)
-                {
-                    if (!Char.IsWhiteSpace(code[length]))
-                    {
-                        chars += code[length];
-                        length++;
-                    }
-                    else
-                    {
-                        stop = true;
-                    }
-                }
+            //if (Char.IsLetter(code[0]))
+            //{
+                ////Else assume variable or keyword for now, delimit by space
+                //String chars = "";
+                //int length = 0;
+                //bool stop = false;
+                //while (length < code.Length && !stop)
+                //{
+                //    if (!Char.IsWhiteSpace(code[length]))
+                //    {
+                //        chars += code[length];
+                //        length++;
+                //    }
+                //    else
+                //    {
+                //        stop = true;
+                //    }
+                //}
 
-                //Is boolean?
-                Token tok;
-                if (new String[]{"TRUE"}.Contains(chars.ToUpper()))
-                {
-                    tok = new Token()
-                    {
-                        token = "true",
-                        tokenType = TokenTypes.constant,
-                        constType = ConstTypes.boolean,
-                        lineNumber = lineNum
-                    };
-                } 
-                else if (new String[] { "FALSE" }.Contains(chars.ToUpper()))
-                {
-                    tok = new Token()
-                    {
-                        token = "false",
-                        tokenType = TokenTypes.constant,
-                        constType = ConstTypes.boolean,
-                        lineNumber = lineNum
-                    };
-                }
-                else
-                {
-                    tok = new Token()
-                    {
-                        token = chars,
-                        tokenType = TokenTypes.identity,
-                        lineNumber = lineNum
-                    };
-                }
+                ////Is boolean?
+                //Token tok;
+                //if (new String[]{"TRUE"}.Contains(chars.ToUpper()))
+                //{
+                //    tok = new Token()
+                //    {
+                //        token = "true",
+                //        tokenType = TokenTypes.constant,
+                //        constType = ConstTypes.boolean,
+                //        lineNumber = lineNum
+                //    };
+                //} 
+                //else if (new String[] { "FALSE" }.Contains(chars.ToUpper()))
+                //{
+                //    tok = new Token()
+                //    {
+                //        token = "false",
+                //        tokenType = TokenTypes.constant,
+                //        constType = ConstTypes.boolean,
+                //        lineNumber = lineNum
+                //    };
+                //}
+                //else
+                //{
+                //    tok = new Token()
+                //    {
+                //        token = chars,
+                //        tokenType = TokenTypes.identity,
+                //        lineNumber = lineNum
+                //    };
+                //}
 
-                this.tokenList.Add(tok);
-                code = code.Substring(length);
+                //this.tokenList.Add(tok);
+                //code = code.Substring(length);
 
 
-                return true;
-            }
+                //return true;
+            //}
 
             return false;
         }
@@ -272,6 +272,28 @@ namespace CoreParser
             return false;
         }
 
+        private bool isIdent(ref string code, int lineNum)
+        {
+            if (Char.IsLetter(code[0]))
+            {
+                int i = 1;
+                while (i < code.Length && (Char.IsLetter(code[i]) || isDigit(code[i])) && !this.reserveChars.Contains(code[i]))
+                {
+                    //tok.token += code[i];
+                    i++;
+                }
+                Token tok = new Token()
+                {
+                    token = code.Substring(0, i),
+                    tokenType = TokenTypes.identity,
+                };
+                this.tokenList.Add(tok);
+                code = code.Substring(i);
+                return true;
+            }
+            return false;
+        }
+
 
         /* PUBLIC */
 
@@ -306,6 +328,12 @@ namespace CoreParser
                     Debug.WriteLine("Statement found on line " + lineNum);
                     continue;
                 }
+                
+                if(this.isBoolean(ref code, lineNum))
+                {
+                    Debug.WriteLine("Boolean found on line " + lineNum);
+                    continue;
+                }
 
                 // Check if the character is a constant
                 if (this.isConstant(ref code, lineNum))
@@ -313,9 +341,15 @@ namespace CoreParser
                     Debug.WriteLine("Constant found on line " + lineNum);
                     continue;
                 }
+                // Check if the character is a constant
+                if (this.isIdent(ref code, lineNum))
+                {
+                    Debug.WriteLine("Ident found on line " + lineNum);
+                    continue;
+                }
 
-                // Check for new line and increment line number
-                if (code.Length > 2 && code.Substring(0, 2) == "\n")
+            // Check for new line and increment line number
+            if (code.Length > 2 && code.Substring(0, 2) == "\n")
                 {
                     lineNum++;
                     charNum = 0;
