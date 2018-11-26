@@ -1,0 +1,16 @@
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/NLP_Lexer.deps.json
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/NLP_Lexer.runtimeconfig.json
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/NLP_Lexer.runtimeconfig.dev.json
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/NLP_Lexer.dll
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/NLP_Lexer.pdb
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.csprojAssemblyReference.cache
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.csproj.CoreCompileInputs.cache
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.AssemblyInfoInputs.cache
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.AssemblyInfo.cs
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.dll
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.pdb
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/CoreParser.dll
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/ParserEngine.dll
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/CoreParser.pdb
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/bin/Debug/netcoreapp2.1/ParserEngine.pdb
+/Users/georgemarkham/Documents/MSc/advanced_programming/GPL/Interpreter/Interpreter/NLP_Lexer/obj/Debug/netcoreapp2.1/NLP_Lexer.csproj.CopyComplete
