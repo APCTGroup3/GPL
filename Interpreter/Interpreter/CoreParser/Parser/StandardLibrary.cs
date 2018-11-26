@@ -26,12 +26,12 @@ namespace CoreParser.Parser.StandardLibrary
             //Check parameters passed
             if (args.Length != parameterTypes.Length)
             {
-                throw new Exception("Incorrect number of parameters");
+                throw new Exception("Error in function " + Name + ": Expected " + parameterTypes.Length + "arguments, found " + args.Length);
             }
 
             for (int i = 0; i < args.Length; i++)
             {
-                if (!args[i].GetType().Equals(parameterTypes[i]))
+                if (!(args[i].GetType().Equals(parameterTypes[i]) || args[i].GetType().IsSubclassOf(parameterTypes[i])))
                 {
                     throw new Exception("Incorrect parameter type");
                 }
@@ -72,6 +72,7 @@ namespace CoreParser.Parser.StandardLibrary
                                       args =>
             {
                 Console.WriteLine(args[0].ToStr());
+                return new Void();
             }));
         }
 

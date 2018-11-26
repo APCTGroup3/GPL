@@ -16,7 +16,7 @@ namespace CoreParser.Parser
             Tokens = tokens;
             pos = 0;
 
-            AST = ParseAssignment();
+            AST = ParseStatements();
             return AST;
 
         }
@@ -24,6 +24,78 @@ namespace CoreParser.Parser
         /****** NUMERIC EXPRESSIONS *******/
         // Any mathematical expression that returns a number
 
+        private Node ParseStatements()
+        {
+            BlockNode node = new BlockNode(new Token());
+            List<Node> statements = new List<Node>();
+            while (CurrentToken.tokenType != TokenTypes.eof)
+            {
+                if (CurrentToken.tokenType == TokenTypes.newline)
+                {
+                    Consume();
+                }
+                else
+                {
+                    statements.Add(ParseStatement());
+                }
+            }
+            node.Statements = statements;
+            return node;
+        }
+
+        private Node ParseStatement()
+        {
+            if (CurrentToken.tokenType == TokenTypes.statement)
+            {
+                switch(CurrentToken.token)
+                {
+                    case "if":
+                        return ParseIf();
+                    default:
+                        throw new Exception(CurrentToken.token + " not implemented yet");
+                }
+            }
+            else
+            {
+                return ParseAssignment();
+            }
+        }
+
+        private Node ParseIf()
+        {
+            if (CurrentToken.tokenType == TokenTypes.statement && CurrentToken.token == "if")
+            {
+                Consume();
+                Node condition = ParseExpression();
+                if (CurrentToken.token == "then")
+                {
+                    Consume();
+                    Node statements = ParseStatements();
+                    Node node = new IfNode(new Token(), condition, statements);
+                    return node;
+                }
+            }
+            throw new ParserException("Expected \"if\", found " + CurrentToken.token);
+        }
+
+        private Node ParseVarOrFunction()
+        {
+            Node name = ParseVarName();
+            if (CurrentToken.token.Equals("("))
+            {
+                Consume();
+                List<Node> parameters = new List<Node>();
+                while (!CurrentToken.token.Equals(")")) 
+                {
+                    parameters.Add(ParseExpression());
+                }
+                Consume(); //Consume closing )
+                FunctionNode node = new FunctionNode(name.Token);
+                node.Parameters = parameters;
+                return node;
+            }
+            return new Variable(name.Token);
+        }
 
         private Node ParseAssignment()
         {
@@ -34,20 +106,35 @@ namespace CoreParser.Parser
                     if (Tokens[pos + 1].tokenType == TokenTypes.op && Tokens[pos + 1].token.Equals("="))
                     {
                         var id = ParseVarName();
-                        Consume();
                         var node = new Assignment(CurrentToken);
-                        Consume();
-                        var value = ParseExpression();
+                        Consume(); //Consume 
+                        Node value = null;
+                        try
+                        {
+                            value = ParseExpression();
+                        }
+                        catch (Exception e)
+                        {
+                            value = ParseVarOrFunction();
+                        }
                         node.ID = id;
                         node.Value = value;
                         return node;
                     }
                     else
                     {
+                        if (Tokens[pos + 1].token.Equals("(")) // Assume method
+                        {
+                            return ParseVarOrFunction();
+                        }
                         return ParseExpression();
                     }
                 } catch (Exception e)
                 {
+                    if (Tokens[pos+1].token.Equals("(")) // Assume method
+                    {
+                        return ParseVarOrFunction();
+                    }
                     return ParseExpression();
                 }
             }
@@ -67,6 +154,7 @@ namespace CoreParser.Parser
             else
             {
                 var node = new TerminalNode(CurrentToken);
+                Consume();
                 return node;
             }
         }
@@ -208,9 +296,7 @@ namespace CoreParser.Parser
             } 
             else if (CurrentToken.tokenType == TokenTypes.identity)
             {
-                var node = new Variable(CurrentToken);
-                Consume();
-                return node;                   
+                return ParseVarOrFunction(); 
             }
             else
             {
