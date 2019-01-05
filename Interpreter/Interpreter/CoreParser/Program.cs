@@ -9,8 +9,8 @@ namespace CoreParser
     {
         public static void Main(string[] args)
         {
-            string sourceCode = "while var > 4";
-            NewLexer lexer = new NewLexer(sourceCode);
+            string sourceCode = Utils.ReadFile("test.txt");
+            Lexer lexer = new Lexer(sourceCode);
             lexer.Tokenise();
             List<Token> tokenList = lexer.getTokenList();
             foreach (Token t in tokenList) {

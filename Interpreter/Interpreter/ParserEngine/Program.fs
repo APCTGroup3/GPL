@@ -4,10 +4,8 @@ module Program =
     open Engine
     open System.Collections.Generic
     open CoreParser
-    open CoreParser.Parser
 
-    [<EntryPoint>]
-    let rec main argv =
+    let rec runInterpreter argv =
         let engine = new Engine()
         let lines = new List<string>()
         printfn("Enter expressions (type 'exit' to quit or 'stop' to finish entering statements): ")
@@ -27,8 +25,9 @@ module Program =
 
                         let start = node
 
-                        printfn "Input:\n %s" program
-                        printfn "Result:\n %s" (engine.Run(start).ToStr())
+                        printfn "-----------------------------------------"
+
+                        engine.Run(start) |> ignore
                     finally
                         lines.Clear()
                     printfn "-----------------------------------------"
@@ -40,7 +39,22 @@ module Program =
             with
                 | _ as ex -> printfn "%s" (ex.Message)
             start()
-
         start()
+
+    let testfile() = 
+        let file = Utils.ReadFile("test.txt")
+        let lexer = new CoreParser.Lexer(file)
+        lexer.Tokenise();
+        let parser = new CoreParser.Parser.Parser()
+        let node = parser.Parse(lexer.TokenList)
+        let start = node
+        let engine = new Engine()
+        engine.Run(start) |> ignore
+        1
+
+
+    [<EntryPoint>]
+    let rec main argv =
+        testfile()
 
 

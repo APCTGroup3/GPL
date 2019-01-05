@@ -10,9 +10,21 @@ namespace CoreParser.Parser
         public Node AST { get; private set; }
         private int pos;
 
+        private readonly Dictionary<string, string> scopePairs = new Dictionary<string, string>()
+        {
+            {"{", "}"},
+            {"if", "endif"},
+            {"while", "endwhile"},
+            {"for", "endfor"}
+        };
+
+        private string GetEndScope(string startScope)
+        {
+            return scopePairs.GetValueOrDefault(startScope);
+        }
+
         public Node Parse(IList<Token> tokens)
         {
-
             Tokens = tokens;
             pos = 0;
 
@@ -24,28 +36,55 @@ namespace CoreParser.Parser
         /****** NUMERIC EXPRESSIONS *******/
         // Any mathematical expression that returns a number
 
-        private Node ParseStatements()
+        private Node ParseStatements(string startScope)
         {
+
             BlockNode node = new BlockNode(new Token());
             List<Node> statements = new List<Node>();
-            while (CurrentToken.tokenType != TokenTypes.eof)
+            //if (startScope != null)
+            bool inScope = true;
+            while (inScope)
             {
+                if (startScope == null)
+                {
+                    inScope = CurrentToken.tokenType != TokenTypes.eof;
+                }
+                else
+                {
+                    inScope = CurrentToken.token != GetEndScope(startScope);
+                }
+
+                if (!inScope)
+                {
+                    Consume();
+                    break;
+                }
+
                 if (CurrentToken.tokenType == TokenTypes.newline)
                 {
                     Consume();
                 }
-                else
+                else if (CurrentToken.token == "{") //Start new scope
                 {
+                    statements.Add(ParseStatements("{"));
+                }
+                else
+                { 
                     statements.Add(ParseStatement());
                 }
-            }
-            node.Statements = statements;
-            return node;
+           }
+           node.Statements = statements;
+           return node;
+        }
+
+        private Node ParseStatements()
+        {
+            return ParseStatements(null);
         }
 
         private Node ParseStatement()
         {
-            if (CurrentToken.tokenType == TokenTypes.statement)
+            if (CurrentToken.tokenType == TokenTypes.keyword)
             {
                 switch(CurrentToken.token)
                 {
@@ -63,17 +102,46 @@ namespace CoreParser.Parser
 
         private Node ParseIf()
         {
-            if (CurrentToken.tokenType == TokenTypes.statement && CurrentToken.token == "if")
+            if (CurrentToken.tokenType == TokenTypes.keyword && CurrentToken.token == "if")
             {
                 Consume();
                 Node condition = ParseExpression();
+                Node statements = null;
                 if (CurrentToken.token == "then")
                 {
                     Consume();
-                    Node statements = ParseStatements();
+                }
+                //Check if inline if or block
+                if (CurrentToken.tokenType == TokenTypes.newline) //Continue until endif unless next token is {
+                {
+                    while (CurrentToken.tokenType == TokenTypes.newline)
+                    {
+                        Consume();
+                    }
+                    if (CurrentToken.token == "{") //Continue until }
+                    {
+                        Consume(); //{
+                        statements = ParseStatements("{");
+                    }
+                    else //Continue until endif
+                    { 
+                        statements = ParseStatements("if");
+                    }
+                }
+                else
+                {
+                    if (CurrentToken.token == "{") //Continue until }
+                    {
+                        Consume(); //{
+                        statements = ParseStatements("{");
+                    }
+                    else //inline if
+                    {
+                        statements = ParseStatement();
+                    }
+                }
                     Node node = new IfNode(new Token(), condition, statements);
                     return node;
-                }
             }
             throw new ParserException("Expected \"if\", found " + CurrentToken.token);
         }

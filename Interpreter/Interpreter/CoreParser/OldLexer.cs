@@ -297,7 +297,7 @@ namespace CoreParser
 
         /* PUBLIC */
 
-        public Lexer(string sourceCode)
+        public OldLexer(string sourceCode)
         {
             this.sourceCode = sourceCode;
         }

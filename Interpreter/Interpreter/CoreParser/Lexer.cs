@@ -6,13 +6,14 @@ namespace CoreParser
 {
     public class Lexer
     {
+
         public List<Token> TokenList { get; private set; }
         private string sourceCode;
 
         //Reserved words
         private static string[] reservedKeywords =
         {
-            "for", "do", "if", "else", "then"
+            "for", "do", "if", "else", "then", "while", "elif"
         };
         private static string[] reservedOps =
         {
@@ -101,6 +102,8 @@ namespace CoreParser
             {
                 ProcessNextToken();
             }
+            //Make sure EOF is final token
+            BuildToken(TokenTypes.eof);
         }
 
         public void ProcessNextToken()
@@ -298,6 +301,7 @@ namespace CoreParser
                 case ']':
                 case ':':
                 case ';':
+                case '=':
                     Consume();
                     BuildToken(TokenTypes.op);
                     break;
@@ -319,6 +323,8 @@ namespace CoreParser
                     }
                     BuildToken(TokenTypes.op);
                     break;
+                default:
+                    throw new Exception("Unexpected symbol " + Current);
             }
         }
         private void ScanString(char delimiter)
