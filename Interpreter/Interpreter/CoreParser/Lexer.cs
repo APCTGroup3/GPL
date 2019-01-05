@@ -272,7 +272,7 @@ namespace CoreParser
                 }
                 else if (reservedBools.Contains(currentToken.ToLower()))
                 {
-                    BuildToken(TokenTypes.boolean);
+                    BuildToken(TokenTypes.constant, ConstTypes.boolean);
                 }
             }
             else
@@ -289,8 +289,6 @@ namespace CoreParser
                 case '/':
                 case '*':
                 case '^':
-                case '>':
-                case '<':
                 case '.':
                 case ',':
                 case '(':
@@ -305,6 +303,16 @@ namespace CoreParser
                     Consume();
                     BuildToken(TokenTypes.op);
                     break;
+
+                case '<':
+                case '>':
+                case '!':
+                    Consume();
+                    if (Current == '=')
+                        Consume();
+                    BuildToken(TokenTypes.op);
+                    break;
+
                 case '&':
                     //Allow & and && as and symbol
                     Consume();
@@ -314,6 +322,7 @@ namespace CoreParser
                     }
                     BuildToken(TokenTypes.op);
                     break;
+
                 case '|':
                     //Sim for OR
                     Consume();

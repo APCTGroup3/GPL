@@ -90,6 +90,8 @@ namespace CoreParser.Parser
                 {
                     case "if":
                         return ParseIf();
+                    case "while":
+                        return ParseWhile();
                     default:
                         throw new Exception(CurrentToken.token + " not implemented yet");
                 }
@@ -142,6 +144,52 @@ namespace CoreParser.Parser
                 }
                     Node node = new IfNode(new Token(), condition, statements);
                     return node;
+            }
+            throw new ParserException("Expected \"if\", found " + CurrentToken.token);
+        }
+
+        private Node ParseWhile()
+        {
+            if (CurrentToken.tokenType == TokenTypes.keyword && CurrentToken.token == "while")
+            {
+                Consume();
+                Expression condition = (Expression)ParseExpression();
+                Node statements = null;
+                if (CurrentToken.token == "do")
+                {
+                    Consume();
+                }
+                //Check if inline if or block
+                if (CurrentToken.tokenType == TokenTypes.newline) //Continue until endif unless next token is {
+                {
+                    while (CurrentToken.tokenType == TokenTypes.newline)
+                    {
+                        Consume();
+                    }
+                    if (CurrentToken.token == "{") //Continue until }
+                    {
+                        Consume(); //{
+                        statements = ParseStatements("{");
+                    }
+                    else //Continue until endif
+                    {
+                        statements = ParseStatements("while");
+                    }
+                }
+                else
+                {
+                    if (CurrentToken.token == "{") //Continue until }
+                    {
+                        Consume(); //{
+                        statements = ParseStatements("{");
+                    }
+                    else //inline if
+                    {
+                        statements = ParseStatement();
+                    }
+                }
+                Node node = new WhileNode(new Token(), condition, statements);
+                return node;
             }
             throw new ParserException("Expected \"if\", found " + CurrentToken.token);
         }
@@ -373,19 +421,19 @@ namespace CoreParser.Parser
         }
 
         private Node ParseBool()
+        {
+            var valid = CurrentToken.tokenType == TokenTypes.boolean;
+            if (!valid)
             {
-                var valid = CurrentToken.tokenType == TokenTypes.boolean;
-                if (!valid)
-                {
-                    throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected boolean; found " + CurrentToken.token);
-                }
-                else
-                {
-                    var node = new TerminalNode(CurrentToken);
-                    Consume();
-                    return node;
-                }
+                throw new ParserException("Line " + CurrentToken.lineNumber + ": Expected boolean; found " + CurrentToken.token);
             }
+            else
+            {
+                var node = new TerminalNode(CurrentToken);
+                Consume();
+                return node;
+            }
+        }
 
         //public static void Main(string[] args)
         //{

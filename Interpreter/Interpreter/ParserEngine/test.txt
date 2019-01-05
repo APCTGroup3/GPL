@@ -1,5 +1,5 @@
-﻿a=6
-b=4
-if a > b {
-Print("foo")
-}
+﻿a=1
+while a<=5 do
+a = a + 1
+endwhile
+Print(a)
