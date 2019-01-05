@@ -9,7 +9,8 @@ namespace CoreParser
         constant = 4,
         eof = 5,
         boolean = 6,
-        newline = 7
+        newline = 7,
+        keyword = 8 //if, else, for etc
     }
 
     public enum ConstTypes

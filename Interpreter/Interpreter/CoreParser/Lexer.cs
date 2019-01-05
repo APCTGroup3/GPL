@@ -1,373 +1,348 @@
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-
 
 namespace CoreParser
 {
-
     public class Lexer
     {
-        /* Interesting Links
+        public List<Token> TokenList { get; private set; }
+        private string sourceCode;
 
-        * https://hackernoon.com/lexical-analysis-861b8bfe4cb0
-        * https://jack-vanlightly.com/blog/2016/2/3/creating-a-simple-tokenizer-lexer-in-c
-        * 
-        ------------------------------ 
-        */
-
-
-        /* PRIVATE */
-
-
-
-        private List<Token> tokenList = new List<Token>();
-        private string sourceCode = string.Empty;
-        List<char> reserveChars = new List<char>(new char[] { '.', '+', '<', '>', '=', '-', '/', '%' });
-        //private List<string> reserveChars = new List<string>{ ".", "+", "<", ">", "=", "==", "-", "/", "%" };
-
-
-        private bool isOperator(ref string code, int lineNum)
+        //Reserved words
+        private static string[] reservedKeywords =
         {
-            if (code.Length > 2 && (code.Substring(0, 2) == "lt" || code.Substring(0, 2) == "gt" || code.Substring(0, 2) == "<=" || code.Substring(0, 2) == ">=" || code.Substring(0, 2) == "==" || code.Substring(0, 2) == "!="))
+            "for", "do", "if", "else", "then"
+        };
+        private static string[] reservedOps =
+        {
+            "and", "or"
+        };
+        private static string[] reservedBools =
+        {
+            "true", "false"
+        };
+
+        private static string symbols = "+-=&|/*(){}<>[]!%.,?;:^";
+        private const char END_OF_FILE = '\0';
+        private const char NEWLINE = '\n';
+
+        //Vars for traversing source code
+        private int lineNum;
+        private int colNum;
+        private int position;
+        private string currentToken; //Token being built
+
+
+        //Accessors for chars within soursecode
+        private char Current
+        {
+            get
             {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 2),
-                    tokenType = TokenTypes.op,
-                    lineNumber = lineNum
-                };
-
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(2);
-                return true;
+                return Peek(0);
             }
-
-            if (code[0] == '=' || code[0] == '>' || code[0] == '<' || code[0] == '+' || code[0] == '-' || code[0] == '/' || code[0] == '*' || (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType != TokenTypes.constant) || code[0] == '^' || code[0] == '(' || code[0] == ')')
-            {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 1),
-                    tokenType = TokenTypes.op,
-                    lineNumber = lineNum
-                };
-
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(1);
-                return true;
-            }
-
-
-
-            return false;
         }
-
-        private bool isConstant(ref string code, int lineNum)
+        private char Next
         {
-            if (code[0] == '.' && tokenList[tokenList.Count - 1].tokenType == TokenTypes.constant)
+            get
             {
-                Token tok = tokenList[tokenList.Count - 1];
-                tok.token += '.';
-
-                int i = 1;
-                while (i <= code.Length && isDigit(code[i]))
-                {
-                    tok.token += code[i];
-
-                    i++;
-                }
-                this.tokenList.RemoveAt(tokenList.Count - 1);
-                this.tokenList.Add(tok);
-                code = code.Substring(i);
-                return true;
+                return Peek(1);
             }
-
-            if (code[0] == '"' | code[0] == '\'' ) //string literal
-            {
-                char delimiter = code[0];
-                string str = "";
-                int i = 1;
-                while (code[i] != delimiter)
-                {
-                    str += code[i];
-                    i++;
-                }
-                var tok = new Token()
-                {
-                    token = code.Substring(1, i - 1),
-                    tokenType = TokenTypes.constant,
-                    constType = ConstTypes.str,
-                    lineNumber = lineNum
-                };
-
-                tokenList.Add(tok);
-                code = code.Substring(i + 1);
-                return true;
-            }
-
-            if (isDigit(code[0]))
-            {
-                String num = string.Empty;
-                int i = 0;
-                while (i < code.Length && ( isDigit(code[i]) || code[i] == '.') )
-                {
-                    i++;
-                }
-
-                // is a digit
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, i),
-                    tokenType = TokenTypes.constant,
-                    constType = ConstTypes.number,
-                    lineNumber = lineNum
-                };
-
-                this.tokenList.Add(tok);
-                code = code.Substring(i);
-                return true;
-            }
-
-            //if (Char.IsLetter(code[0]))
-            //{
-                ////Else assume variable or keyword for now, delimit by space
-                //String chars = "";
-                //int length = 0;
-                //bool stop = false;
-                //while (length < code.Length && !stop)
-                //{
-                //    if (!Char.IsWhiteSpace(code[length]))
-                //    {
-                //        chars += code[length];
-                //        length++;
-                //    }
-                //    else
-                //    {
-                //        stop = true;
-                //    }
-                //}
-
-                ////Is boolean?
-                //Token tok;
-                //if (new String[]{"TRUE"}.Contains(chars.ToUpper()))
-                //{
-                //    tok = new Token()
-                //    {
-                //        token = "true",
-                //        tokenType = TokenTypes.constant,
-                //        constType = ConstTypes.boolean,
-                //        lineNumber = lineNum
-                //    };
-                //} 
-                //else if (new String[] { "FALSE" }.Contains(chars.ToUpper()))
-                //{
-                //    tok = new Token()
-                //    {
-                //        token = "false",
-                //        tokenType = TokenTypes.constant,
-                //        constType = ConstTypes.boolean,
-                //        lineNumber = lineNum
-                //    };
-                //}
-                //else
-                //{
-                //    tok = new Token()
-                //    {
-                //        token = chars,
-                //        tokenType = TokenTypes.identity,
-                //        lineNumber = lineNum
-                //    };
-                //}
-
-                //this.tokenList.Add(tok);
-                //code = code.Substring(length);
-
-
-                //return true;
-            //}
-
-            return false;
         }
-
-        private bool isDigit(char code)
+        private char Previous
         {
-            if (code >= '0' && code <= '9')
+            get
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                return Peek(-1);
             }
         }
 
-        private bool isBoolean(ref string code, int lineNum)
+        private char Peek(int charsAhead)
         {
-            if (code.Length > 4 && (code.Substring(0, 4) == "true" || code.Substring(0, 4) == "TRUE" || code.Substring(0, 4) == "false" || code.Substring(0, 4) == "FALSE"))
+            if (position + charsAhead >= sourceCode.Length)
             {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 4),
-                    tokenType = TokenTypes.constant,
-                    constType = ConstTypes.boolean,
-                    lineNumber = lineNum
-                };
-
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(4);
-
-                return true;
+                return '\0';
             }
-            return false;
+            return sourceCode[position + charsAhead];
         }
-
-        private bool isStatement(ref string code, int lineNum)
-        {
-            if (code.Length > 4 && (code.Substring(0, 4) == "else" || code.Substring(0, 4) == "then"))
-            {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 4),
-                    tokenType = TokenTypes.statement,
-                    lineNumber = lineNum
-                };
-
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(4);
-
-                return true;
-            }
-            if (code.Length >= 2 && code.Substring(0, 2) == "if")
-            {
-                // Create a new token with the correct type and the part of the source code it is scanning
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, 2),
-                    tokenType = TokenTypes.statement,
-                };
-
-                this.tokenList.Add(tok);
-
-                //Remove the token from the source code
-                code = code.Substring(2);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool isIdent(ref string code, int lineNum)
-        {
-            if (Char.IsLetter(code[0]))
-            {
-                int i = 1;
-                while (i < code.Length && (Char.IsLetter(code[i]) || isDigit(code[i])) && !this.reserveChars.Contains(code[i]))
-                {
-                    //tok.token += code[i];
-                    i++;
-                }
-                Token tok = new Token()
-                {
-                    token = code.Substring(0, i),
-                    tokenType = TokenTypes.identity,
-                };
-                this.tokenList.Add(tok);
-                code = code.Substring(i);
-                return true;
-            }
-            return false;
-        }
-
-
-        /* PUBLIC */
 
         public Lexer(string sourceCode)
         {
             this.sourceCode = sourceCode;
+            TokenList = new List<Token>();
+        }
+
+        private void Consume()
+        {
+            currentToken += Current;
+            Advance();
+        }
+        private void Advance()
+        {
+            position++;
+            colNum++;
+        }
+        private void ProcessNewLine()
+        {
+            lineNum++;
+            colNum = 0;
         }
 
 
-        public void Tokenise()
-        {
-            string code = this.sourceCode; //Probably should just pass code as param
+        public void Tokenise() {
+            //Reset params
+            TokenList = new List<Token>();
+            lineNum = 1;
+            position = 0;
+            colNum = 0;
+            currentToken = "";
 
-            int charNum = 0;
-            int lineNum = 0;
-
-            while (code != string.Empty)
+            while (!IsEndOfFile() || position < sourceCode.Length)
             {
+                ProcessNextToken();
+            }
+        }
 
-                Debug.WriteLine(code);
+        public void ProcessNextToken()
+        {
+            //Attempt to create tokens depending on current char
+            if (IsEndOfFile()) //If file is empty
+            {
+                BuildToken(TokenTypes.eof);
+            }
+            else if (IsNewLine())
+            {
+                ScanNewLine();
+            }
+            else if (IsWhitespace())
+            {
+                ScanWhitespace();
+            }
+            else if (IsDigit())
+            {
+                ScanNumber();
+            }
+            else if (IsIdentifierStart())
+            {
+                ScanIdentifier();
+            }
+            else if (isSymbol())
+            {
+                ScanSymbol();
+            }
+            else if (Current == '"' || Current == '\'')
+            {
+                ScanString(Current);
+            }
+        }
 
-                // Check if the character is an operator
-                if (this.isOperator(ref code, lineNum))
-                {
-                    Debug.WriteLine("Operator found on line " + lineNum);
-                    continue;
-                }
+        //Create new token and add to list
+        private void BuildToken(TokenTypes type)
+        {
+            Token token = new Token
+            {
+                token = currentToken.ToString(),
+                lineNumber = lineNum,
+                tokenType = type
+            };
+            TokenList.Add(token);
+            currentToken = "";
+        }
+        private void BuildToken(TokenTypes type, ConstTypes constType)
+        {
+            Token token = new Token
+            {
+                token = currentToken.ToString(),
+                lineNumber = lineNum,
+                tokenType = type,
+                constType = constType
+            };
+            TokenList.Add(token);
+            currentToken = "";
+        }
 
-                // Check if the character is a statement
-                if (this.isStatement(ref code, lineNum))
-                {
-                    Debug.WriteLine("Statement found on line " + lineNum);
-                    continue;
-                }
-                
-                if(this.isBoolean(ref code, lineNum))
-                {
-                    Debug.WriteLine("Boolean found on line " + lineNum);
-                    continue;
-                }
 
-                // Check if the character is a constant
-                if (this.isConstant(ref code, lineNum))
-                {
-                    Debug.WriteLine("Constant found on line " + lineNum);
-                    continue;
-                }
-                // Check if the character is a constant
-                if (this.isIdent(ref code, lineNum))
-                {
-                    Debug.WriteLine("Ident found on line " + lineNum);
-                    continue;
-                }
+        /* Methods for identifying character type */
+        private bool IsDigit()
+        {
+            return char.IsDigit(Current);
+        }
+        private bool IsEndOfFile()
+        {
+            return Current < 0 || Current == END_OF_FILE;
+        }
+        private bool IsNewLine()
+        {
+            return Current == NEWLINE;
+        }
+        private bool IsIdentifierStart()
+        {
+            return Current == '_' || IsLetter();
+        }
+        private bool IsIdentifier()
+        {
+            return IsIdentifierStart() || IsDigit();
+        }
+        private bool IsLetter()
+        {
+            return char.IsLetter(Current);
+        }
+        private bool IsLetterOrDigit()
+        {
+            return char.IsLetterOrDigit(Current);
+        }
+        private bool IsWhitespace()
+        {
+            return !IsNewLine() && (char.IsWhiteSpace(Current) || IsEndOfFile());
+        }
+        private bool isSymbol()
+        {
+            return symbols.Contains(Current);
+        }
 
-            // Check for new line and increment line number
-            if (code.Length > 2 && code.Substring(0, 2) == "\n")
+        //Checks if in-progress token is a reserved word
+        private bool IsReservedWord()
+        {
+            return reservedKeywords.Contains(currentToken.ToLower())
+                || reservedOps.Contains(currentToken.ToLower())
+                || reservedBools.Contains(currentToken.ToLower());
+        }
+
+
+        //Methods for scanning and creating tokens
+        private void ScanComment()
+        {
+            //Ignore everything until new line
+            while(!IsNewLine())
+            {
+                Advance();
+            }
+        }
+        private void ScanNewLine()
+        {
+            Consume();
+            ProcessNewLine();
+            BuildToken(TokenTypes.newline);
+        }
+        private void ScanWhitespace()
+        {
+            //Skip over whitespace
+            while (IsWhitespace())
+            {
+                Advance();
+            }
+        }
+        private void ScanNumber()
+        {
+            while(IsDigit())
+            {
+                Consume();
+            }
+            //If decimal point and digit follows, treat as float, otherwise token is an int
+            if (Current == '.' && char.IsDigit(Next))
+            {
+                Consume();
+                while(IsDigit())
                 {
-                    lineNum++;
-                    charNum = 0;
+                    Consume();
+                }
+            }
+            BuildToken(TokenTypes.constant, ConstTypes.number);
+        }
+        private void ScanIdentifier()
+        {
+            while(IsIdentifier())
+            {
+                Consume();
+            }
+
+            //Check if reserved word
+            if (IsReservedWord())
+            {
+                if (reservedKeywords.Contains(currentToken.ToLower()))
+                {
+                    BuildToken(TokenTypes.keyword);
+                }
+                else if (reservedOps.Contains(currentToken.ToLower()))
+                {
+                    BuildToken(TokenTypes.op);
+                }
+                else if (reservedBools.Contains(currentToken.ToLower()))
+                {
+                    BuildToken(TokenTypes.boolean);
+                }
+            }
+            else
+            {
+                BuildToken(TokenTypes.identity);
+            }
+        }
+        private void ScanSymbol()
+        {
+            switch (Current)
+            {
+                case '+':
+                case '-':
+                case '/':
+                case '*':
+                case '^':
+                case '>':
+                case '<':
+                case '.':
+                case ',':
+                case '(':
+                case ')':
+                case '{':
+                case '}':
+                case '[':
+                case ']':
+                case ':':
+                case ';':
+                    Consume();
+                    BuildToken(TokenTypes.op);
+                    break;
+                case '&':
+                    //Allow & and && as and symbol
+                    Consume();
+                    if (Current == '&')
+                    {
+                        Consume();
+                    }
+                    BuildToken(TokenTypes.op);
+                    break;
+                case '|':
+                    //Sim for OR
+                    Consume();
+                    if (Current == '|')
+                    {
+                        Consume();
+                    }
+                    BuildToken(TokenTypes.op);
+                    break;
+            }
+        }
+        private void ScanString(char delimiter)
+        {
+            Advance();
+            while (Current != delimiter)
+            {
+                //Allow multi-line string but don't ignore newlines as newlines
+                if (IsEndOfFile())
+                {
+                    throw new Exception("Encountered end of file");
                 }
                 else
                 {
-                    // Don't bother incrementing character number if line number is updating
-                    charNum++;
+                    Consume();
                 }
-
-                // Remove first element of source code
-                code = code.Substring(1);
             }
+            Advance(); //Past delimiter
+            BuildToken(TokenTypes.constant, ConstTypes.str);
         }
 
         public List<Token> getTokenList()
         {
-            return tokenList;
+            return TokenList;
         }
     }
 }

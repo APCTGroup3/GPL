@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoreParser.Parser.Ops
+namespace CoreParser.Parser.AST.Ops
 {
     public class TerminalNode : Node
     {
-        public TerminalNode(Token token)
+        public TerminalNode(Token token) : base(token)
         {
             Token = token;
         }

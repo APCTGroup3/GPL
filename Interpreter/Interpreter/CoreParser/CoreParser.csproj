@@ -6,4 +6,10 @@
   <ItemGroup>
     <Folder Include="Parser\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Parser\Assignment.cs" />
+    <Compile Remove="Parser\Node.cs" />
+    <Compile Remove="Parser\UnaryNode.cs" />
+    <Compile Remove="Parser\Variable.cs" />
+  </ItemGroup>
 </Project>
