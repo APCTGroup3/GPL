@@ -17,7 +17,8 @@ namespace CoreParser
     {
         boolean = 1,
         number = 2,
-        str = 3
+        str = 3,
+        nullVal = 4
     }
 
     public class Token{

@@ -104,9 +104,10 @@ module Engine =
         member this.Visit_If(node: IfNode) =
             let cond = node.Condition
             let statements = node.Statements
+            let elseStatements = node.ElseStatements
             let res = match this.Visit(cond).ToBool() with
                       | true -> this.Visit(statements)
-                      | false -> Void() :> Terminal
+                      | false -> this.Visit(elseStatements)
             res
 
         member this.Visit_Function(node: FunctionNode) =

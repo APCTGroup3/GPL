@@ -15,7 +15,8 @@ namespace CoreParser.Parser
             {"{", "}"},
             {"if", "endif"},
             {"while", "endwhile"},
-            {"for", "endfor"}
+            {"for", "endfor"},
+            {"else", "endelse" }
         };
 
         private string GetEndScope(string startScope)
@@ -104,16 +105,64 @@ namespace CoreParser.Parser
 
         private Node ParseIf()
         {
-            if (CurrentToken.tokenType == TokenTypes.keyword && CurrentToken.token == "if")
+            Consume();
+            Node condition = ParseExpression();
+            Node statements = null;
+            if (CurrentToken.token == "then")
             {
                 Consume();
-                Node condition = ParseExpression();
-                Node statements = null;
-                if (CurrentToken.token == "then")
+            }
+            //Check if inline if or block
+            if (CurrentToken.tokenType == TokenTypes.newline) //Continue until endif unless next token is {
+            {
+                while (CurrentToken.tokenType == TokenTypes.newline)
                 {
                     Consume();
                 }
-                //Check if inline if or block
+                if (CurrentToken.token == "{") //Continue until }
+                {
+                    Consume(); //{
+                    statements = ParseStatements("{");
+                }
+                else //Continue until endif
+                { 
+                    statements = ParseStatements("if");
+                }
+            }
+            else
+            {
+                if (CurrentToken.token == "{") //Continue until }
+                {
+                    Consume(); //{
+                    statements = ParseStatements("{");
+                }
+                else //inline if
+                {
+                    statements = ParseStatement();
+                }
+            }
+
+            //Check for else statement
+            Node elseStatements = ParseElse();
+
+            Node node = (elseStatements == null) ? new IfNode(new Token(), condition, statements) : new IfNode(new Token(), condition, statements, elseStatements);
+                return node;
+        }
+
+        private Node ParseElse()
+        {
+            //Ignore newlines
+            if (CurrentToken.tokenType == TokenTypes.newline)
+            {
+                while (CurrentToken.tokenType == TokenTypes.newline)
+                {
+                    Consume();
+                }
+            }
+            var tokenStr = CurrentToken.token.ToLower();
+            if (tokenStr == "else")
+            {
+                Consume();
                 if (CurrentToken.tokenType == TokenTypes.newline) //Continue until endif unless next token is {
                 {
                     while (CurrentToken.tokenType == TokenTypes.newline)
@@ -123,29 +172,30 @@ namespace CoreParser.Parser
                     if (CurrentToken.token == "{") //Continue until }
                     {
                         Consume(); //{
-                        statements = ParseStatements("{");
+                        return ParseStatements("{");
                     }
-                    else //Continue until endif
-                    { 
-                        statements = ParseStatements("if");
+                    else //continue until endif
+                    {
+                        return ParseStatements("else");
                     }
                 }
-                else
+                else if (CurrentToken.token == "{") //Continue until }
                 {
-                    if (CurrentToken.token == "{") //Continue until }
-                    {
-                        Consume(); //{
-                        statements = ParseStatements("{");
-                    }
-                    else //inline if
-                    {
-                        statements = ParseStatement();
-                    }
+                    Consume(); //{
+                    return ParseStatements("{");
                 }
-                    Node node = new IfNode(new Token(), condition, statements);
-                    return node;
+                else //inline else or else if
+                {
+                    return ParseStatement();
+                }
+
             }
-            throw new ParserException("Expected \"if\", found " + CurrentToken.token);
+            else if (tokenStr == "elif" || tokenStr == "elseif")
+            {
+                return ParseIf();
+            }
+            else
+                return null;
         }
 
         private Node ParseWhile()
