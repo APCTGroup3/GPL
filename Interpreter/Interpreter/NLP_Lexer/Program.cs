@@ -13,7 +13,7 @@ namespace NLP_Lexer
 
             NLP_Lexer.Lexer nlpLexer = new NLP_Lexer.Lexer(ACCESS_TOKEN);
 
-            string lex_chunk = nlpLexer.Tokenise("add 3 and 6");
+            string lex_chunk = nlpLexer.Tokenise("b = add 3 and a");
             Console.WriteLine(lex_chunk);
 
             //Wit client = new Wit(accessToken: ACCESS_TOKEN);
@@ -51,7 +51,7 @@ namespace NLP_Lexer
             //    lex_chunk += response.Entities["number"][1]["value"];
             //}
 
-            CoreParser.Lexer lexer = new CoreParser.Lexer(lex_chunk);
+            //CoreParser.Lexer lexer = new CoreParser.Lexer(lex_chunk);
 
             //lexer.Tokenise();
             //List<Token> tokenList = lexer.getTokenList();

@@ -19,33 +19,144 @@ namespace NLP_Lexer
 
             string lex_chunk = string.Empty;
 
+            // Reflects BIDMAS order of operations
+
+            if (response.Entities.ContainsKey("identity"))
+            {
+                foreach(var entity in response.Entities)
+                {
+                    Console.WriteLine(entity);
+                }
+                string ident = (string) response.Entities["identity"][0]["value"];
+
+                lex_chunk += ident;
+
+                if (line.Substring(0,1) == ident)
+                {
+                    lex_chunk += " = ";
+                }
+            }
+
+            if (response.Entities.ContainsKey("divide"))
+            {
+                if (response.Entities["number"].Count > 0)
+                {
+                    if (response.Entities["number"].Count == 1)
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " / ";
+                        if (line.Substring(0, 1) == (string)response.Entities["identity"][0]["value"])
+                        {
+                            lex_chunk += response.Entities["identity"][1]["value"];
+                        } else
+                        {
+                            lex_chunk += response.Entities["identity"][0]["value"];
+                        }
+                    }
+                    else
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " / ";
+                        lex_chunk += response.Entities["number"][1]["value"];
+
+                    }
+                }
+                else
+                {
+                    lex_chunk += " / ";
+                }
+            }
+
+            if (response.Entities.ContainsKey("multiply"))
+            {
+                if (response.Entities["number"].Count > 0)
+                {
+                    if (response.Entities["number"].Count == 1)
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " * ";
+                        if (line.Substring(0, 1) == (string)response.Entities["identity"][0]["value"])
+                        {
+                            lex_chunk += response.Entities["identity"][1]["value"];
+                        }
+                        else
+                        {
+                            lex_chunk += response.Entities["identity"][0]["value"];
+                        }
+                    }
+                    else
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " * ";
+                        lex_chunk += response.Entities["number"][1]["value"];
+
+                    }
+                }
+                else
+                {
+                    lex_chunk += " * ";
+                }
+            }
+
             if (response.Entities.ContainsKey("add"))
             {
-                lex_chunk += response.Entities["number"][0]["value"];
-                lex_chunk += " + ";
-                lex_chunk += response.Entities["number"][1]["value"];
+                if(response.Entities["number"].Count > 0)
+                {
+                    if (response.Entities["number"].Count == 1)
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " + ";
+                        if (line.Substring(0, 1) == (string)response.Entities["identity"][0]["value"])
+                        {
+                            lex_chunk += response.Entities["identity"][1]["value"];
+                        }
+                        else
+                        {
+                            lex_chunk += response.Entities["identity"][0]["value"];
+                        }
+                    } else
+                    {
+                        lex_chunk += response.Entities["number"][0]["value"];
+                        lex_chunk += " + ";
+                        lex_chunk += response.Entities["number"][1]["value"];
+
+                    }
+                }
+                else
+                {
+                    lex_chunk += " + ";
+                }
             }
 
             if (response.Entities.ContainsKey("subtract"))
             {
                 // Look into intent //
-                lex_chunk += response.Entities["number"][1]["value"];
-                lex_chunk += " - ";
-                lex_chunk += response.Entities["number"][0]["value"];
-            }
+                if (response.Entities["number"].Count > 0)
+                {
+                    if (response.Entities["number"].Count == 1)
+                    {
+                        lex_chunk += response.Entities["number"][1]["value"];
+                        lex_chunk += " - ";
+                        if (line.Substring(0, 1) == (string)response.Entities["identity"][0]["value"])
+                        {
+                            lex_chunk += response.Entities["identity"][1]["value"];
+                        }
+                        else
+                        {
+                            lex_chunk += response.Entities["identity"][0]["value"];
+                        }
+                    }
+                    else
+                    {
+                        lex_chunk += response.Entities["number"][1]["value"];
+                        lex_chunk += " - ";
+                        lex_chunk += response.Entities["number"][0]["value"];
 
-            if (response.Entities.ContainsKey("divide"))
-            {
-                lex_chunk += response.Entities["number"][0]["value"];
-                lex_chunk += " / ";
-                lex_chunk += response.Entities["number"][1]["value"];
-            }
-
-            if (response.Entities.ContainsKey("multiply"))
-            {
-                lex_chunk += response.Entities["number"][0]["value"];
-                lex_chunk += " * ";
-                lex_chunk += response.Entities["number"][1]["value"];
+                    }
+                } else
+                {
+                    lex_chunk += " - ";
+                }
             }
 
             return lex_chunk;
