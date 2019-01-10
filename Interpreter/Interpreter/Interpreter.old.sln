@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ParserEngine", "ParserEngine\ParserEngine.fsproj", "{D0CC8BC5-EFB4-4D31-A724-F7029288C0A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreParser", "CoreParser\CoreParser.csproj", "{2A909856-F49D-4CEF-9DC8-0BAEA13CE17E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0CC8BC5-EFB4-4D31-A724-F7029288C0A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0CC8BC5-EFB4-4D31-A724-F7029288C0A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0CC8BC5-EFB4-4D31-A724-F7029288C0A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0CC8BC5-EFB4-4D31-A724-F7029288C0A1}.Release|x86.Build.0 = Release|Any CPU
+		{2A909856-F49D-4CEF-9DC8-0BAEA13CE17E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A909856-F49D-4CEF-9DC8-0BAEA13CE17E}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A909856-F49D-4CEF-9DC8-0BAEA13CE17E}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A909856-F49D-4CEF-9DC8-0BAEA13CE17E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.VersionControlPolicy = $2
+	EndGlobalSection
+EndGlobal

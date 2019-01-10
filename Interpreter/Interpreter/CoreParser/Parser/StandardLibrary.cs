@@ -72,6 +72,7 @@ namespace CoreParser.Parser.StandardLibrary
                                       args =>
             {
                 Console.WriteLine(args[0].ToStr());
+                ConsoleOutput.Instance.AddNewLine(args[0].ToStr());
                 return new Void();
             }));
         }

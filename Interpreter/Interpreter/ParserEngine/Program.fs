@@ -55,6 +55,6 @@ module Program =
 
     [<EntryPoint>]
     let rec main argv =
-        testfile()
+        runInterpreter()
 
 
