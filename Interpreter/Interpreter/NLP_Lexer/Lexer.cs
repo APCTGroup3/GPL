@@ -31,7 +31,9 @@ namespace NLP_Lexer
 
                 lex_chunk += ident;
 
-                if (line.Substring(0,1) == ident)
+                // Only do assignment if first character in the line is a variable, followed by equals
+
+                if (line.Substring(0,1) == ident && line.Substring(1, 1) == "=") /*Obviously this is very hacky and should be replaced ASAP*/
                 {
                     lex_chunk += " = ";
                 }
