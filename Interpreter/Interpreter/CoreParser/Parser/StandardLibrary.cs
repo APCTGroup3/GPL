@@ -54,7 +54,7 @@ namespace CoreParser.Parser.StandardLibrary
                     return f.Execute(args);
                 }
             }
-            throw new Exception("No method found");
+            throw new Exception("No method " + name + " found");
         }
 
 
@@ -75,6 +75,21 @@ namespace CoreParser.Parser.StandardLibrary
                 ConsoleOutput.Instance.AddNewLine(args[0].ToStr());
                 return new Void();
             }));
+
+            functions.Add(new Function("Length", new Type[] { typeof(Arr) },
+                args =>
+                {
+                    return new Number(args[0].ToArr().Elements.Count);
+                }
+            ));
+
+            functions.Add(new Function("InitArray", new Type[] { typeof(Number) },
+                args =>
+                {
+                    int i = (int)args[0].ToDouble();
+                    return new Arr(i);
+                }
+            ));
         }
 
 

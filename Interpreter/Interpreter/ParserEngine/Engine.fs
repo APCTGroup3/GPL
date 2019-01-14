@@ -99,10 +99,13 @@ module Engine =
         member this.Visit_AssignArrayElement (node: ArrayAssignment) =
             let id = node.ID.Token.token;
             let element = this.Visit(node.Element)
-            let fullId = id + "." + element.ToStr()
             let value = this.Visit(node.Value)
-            Stack.Peek().Delete(id) |> ignore
-            Stack.Peek().Store(fullId, value)
+            //Check element is number
+            if not (element :? Number) then
+                raise (Exception("Element of array must be a Number"))
+
+            
+            Stack.Peek().StoreArr(id, element :?> Number, value)
             new Void() :> Terminal
 
         member this.Visit_Variable (node: Node) =
@@ -113,8 +116,9 @@ module Engine =
         member this.Visit_ArrayElement (node: ArrayElement) =
             let id = node.Token.token;
             let element = this.Visit(node.Element);
-            let fullId = id + "." + element.ToStr()
-            let value = Stack.Peek().Get(fullId)
+            if not (element :? Number) then
+                raise (Exception("Element of array must be a Number"))
+            let value = Stack.Peek().GetArrElement(id, element :?> Number)
             value
 
         member this.Visit_If(node: IfNode) =
