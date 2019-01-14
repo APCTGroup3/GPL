@@ -260,6 +260,28 @@ namespace CoreParser.Parser
                 node.Parameters = parameters;
                 return node;
             }
+            else if (CurrentToken.token.Equals("[")) //Array element
+            {
+                Consume();
+                Node element;
+                try
+                {
+                    element = ParseExpression();
+                }
+                catch (Exception)
+                {
+                    element = ParseVarOrFunction();
+                }
+                if (CurrentToken.token.Equals("]"))
+                {
+                    Consume();
+                } 
+                else
+                {
+                    throw new ParserException("Expected ], found " + CurrentToken.token);
+                }
+                return new ArrayElement(name.Token, element);
+            }
             return new Variable(name.Token);
         }
 
@@ -269,23 +291,73 @@ namespace CoreParser.Parser
             {
                 try
                 {
-                    if (Tokens[pos + 1].tokenType == TokenTypes.op && Tokens[pos + 1].token.Equals("="))
+                    if (Tokens[pos + 1].tokenType == TokenTypes.op && (Tokens[pos + 1].token.Equals("=") || Tokens[pos + 1].token.Equals("[")))
                     {
                         var id = ParseVarName();
-                        var node = new Assignment(CurrentToken);
-                        Consume(); //Consume 
-                        Node value = null;
-                        try
+                        if (CurrentToken.token.Equals("[")) //Array
                         {
-                            value = ParseExpression();
+                            var node = new ArrayAssignment(CurrentToken);
+                            Consume(); //Consume [
+                            Node value = null;
+                            Node element = null;
+                            try
+                            {
+                                element = ParseExpression();
+                            }
+                            catch (Exception)
+                            {
+                                element = ParseVarOrFunction();
+                            }
+
+                            if (CurrentToken.token.Equals("]"))
+                            {
+                                Consume();
+                            }
+                            else
+                            {
+                                throw new ParserException("Expected ], found " + CurrentToken.token);
+                            }
+
+                            if (CurrentToken.token.Equals("="))
+                            {
+                                Consume();
+                            }
+                            else
+                            {
+                                throw new ParserException("Expected =, found " + CurrentToken.token);
+                            }
+
+                            try
+                            {
+                                value = ParseExpression();
+                            }
+                            catch (Exception)
+                            {
+                                value = ParseVarOrFunction();
+                            }
+
+                            node.ID = id;
+                            node.Value = value;
+                            node.Element = element;
+                            return node;
                         }
-                        catch (Exception e)
+                        else
                         {
-                            value = ParseVarOrFunction();
+                            var node = new Assignment(CurrentToken);
+                            Consume(); //Consume =
+                            Node value = null;
+                            try
+                            {
+                                value = ParseExpression();
+                            }
+                            catch (Exception)
+                            {
+                                value = ParseVarOrFunction();
+                            }
+                            node.ID = id;
+                            node.Value = value;
+                            return node;
                         }
-                        node.ID = id;
-                        node.Value = value;
-                        return node;
                     }
                     else
                     {
@@ -295,7 +367,7 @@ namespace CoreParser.Parser
                         }
                         return ParseExpression();
                     }
-                } catch (Exception e)
+                } catch (Exception)
                 {
                     if (Tokens[pos+1].token.Equals("(")) // Assume method
                     {
