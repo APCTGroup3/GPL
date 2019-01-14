@@ -96,25 +96,9 @@ module Engine =
             let res = new Void()
             res :> Terminal
 
-        member this.Visit_AssignArrayElement (node: ArrayAssignment) =
-            let id = node.ID.Token.token;
-            let element = this.Visit(node.Element)
-            let fullId = id + "." + element.ToStr()
-            let value = this.Visit(node.Value)
-            Stack.Peek().Delete(id) |> ignore
-            Stack.Peek().Store(fullId, value)
-            new Void() :> Terminal
-
         member this.Visit_Variable (node: Node) =
             let id = node.Token.token
             let value = Stack.Peek().Get(id)
-            value
-
-        member this.Visit_ArrayElement (node: ArrayElement) =
-            let id = node.Token.token;
-            let element = this.Visit(node.Element);
-            let fullId = id + "." + element.ToStr()
-            let value = Stack.Peek().Get(fullId)
             value
 
         member this.Visit_If(node: IfNode) =
@@ -152,9 +136,7 @@ module Engine =
                         | :? BinaryOp -> this.Visit_BinaryOp(node)
                         | :? UnaryNode -> this.Visit_UnaryOp(node)
                         | :? Assignment -> this.Visit_Assign(node:?>Assignment)
-                        | :? ArrayAssignment -> this.Visit_AssignArrayElement(node:?>ArrayAssignment)
                         | :? Variable -> this.Visit_Variable(node)
-                        | :? ArrayElement -> this.Visit_ArrayElement(node:?>ArrayElement)
                         | :? IfNode -> this.Visit_If(node:?>IfNode)
                         | :? FunctionNode -> this.Visit_Function(node:?>FunctionNode)
                         | :? WhileNode -> this.Visit_While(node:?>WhileNode)
