@@ -1,1 +1,2 @@
-﻿
+﻿var1=3
+Print(var1)
