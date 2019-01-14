@@ -45,5 +45,10 @@ namespace CoreParser
             }
         }
 
+        public void Clear()
+        {
+            this.output.Clear();
+        }
+
     }
 }

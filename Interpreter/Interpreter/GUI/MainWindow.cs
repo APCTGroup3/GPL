@@ -202,14 +202,24 @@ public partial class MainWindow : Gtk.Window
                 }
             }
             CoreParser.Lexer lexer = new CoreParser.Lexer(sourceCode);
-            lexer.Tokenise();
-            List<CoreParser.Token> tokens = lexer.getTokenList();
-            CoreParser.Parser.Parser parser = new CoreParser.Parser.Parser();
-            parser.Parse(tokens);
-            CoreParser.Parser.AST.Node ast = parser.Parse(tokens);
+            try
+            {
+                lexer.Tokenise();
+                List<Token> tokens = lexer.getTokenList();
+                CoreParser.Parser.Parser parser = new CoreParser.Parser.Parser();
+                CoreParser.Parser.AST.Node ast = parser.Parse(tokens);
 
-            ParserEngine.Engine.Engine engine = new Engine.Engine();
-            engine.Run(ast);
+                ParserEngine.Engine.Engine engine = new Engine.Engine();
+                engine.Run(ast);
+            }
+            catch (Exception e)
+            {
+                MessageDialog md = new MessageDialog(this,
+                    DialogFlags.DestroyWithParent, MessageType.Error,
+                    ButtonsType.Close, e.Message);
+                md.Run();
+                md.Destroy();
+            }
 
             var consoleOutput = ConsoleOutput.Instance.GetOutput();
             if(consoleOutput != null){

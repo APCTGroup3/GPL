@@ -21,7 +21,7 @@ namespace CoreParser.Parser
 
         private string GetEndScope(string startScope)
         {
-            return scopePairs.GetValueOrDefault(startScope);
+            return scopePairs[startScope];
         }
 
         public Node Parse(IList<Token> tokens)
