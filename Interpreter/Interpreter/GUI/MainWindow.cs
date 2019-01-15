@@ -190,6 +190,7 @@ public partial class MainWindow : Gtk.Window
                 {
                     try {
                         tempSourceCode += nlpLexer.Tokenise(line);
+                        Console.WriteLine(tempSourceCode);
                     }
                     catch (Exception e)
                     {

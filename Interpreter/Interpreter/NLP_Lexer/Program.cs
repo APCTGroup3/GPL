@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using CoreParser;
+using ParserEngine;
 
 namespace NLP_Lexer
 {
@@ -13,8 +15,28 @@ namespace NLP_Lexer
 
             NLP_Lexer.Lexer nlpLexer = new NLP_Lexer.Lexer(ACCESS_TOKEN);
 
-            string lex_chunk = nlpLexer.Tokenise("b = add 3 and a");
-            Console.WriteLine(lex_chunk);
+            string inp_a = "b = add 3 and 7";
+            string inp_b = "print b";
+
+            string lex_chunk_a = nlpLexer.Tokenise(inp_a);
+            string lex_chunk_b = nlpLexer.Tokenise(inp_b);
+
+            Console.WriteLine("Input = \n\t" + inp_a + "\n\t" + inp_b);
+
+            Console.WriteLine(lex_chunk_a + "\n" + lex_chunk_b);
+            try
+            {
+                CoreParser.Lexer lexer = new CoreParser.Lexer(lex_chunk_a + "\n" + lex_chunk_b);
+                lexer.Tokenise();
+                List<Token> tokens = lexer.getTokenList();
+                CoreParser.Parser.Parser parser = new CoreParser.Parser.Parser();
+                CoreParser.Parser.AST.Node ast = parser.Parse(tokens);
+                Engine.Engine engine = new Engine.Engine();
+                engine.Run(ast);
+            } catch(Exception e) {
+                Console.WriteLine(e.Message);
+            }
+
 
             //Wit client = new Wit(accessToken: ACCESS_TOKEN);
 
