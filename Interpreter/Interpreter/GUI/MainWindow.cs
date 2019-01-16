@@ -60,11 +60,13 @@ public partial class MainWindow : Gtk.Window
         //HPaned hpane = new HPaned();
 
         //Create TextView
+        var editorWindow = new ScrolledWindow();
         editor = new TextView();
         int editorWidth = this.editor.SizeRequest().Width + 10;
         int editorHeight = this.editor.SizeRequest().Height + 10;
         editor.BorderWidth = 10;
         editor.ModifyBg(StateType.Normal, new Gdk.Color(249, 249, 249));
+        editorWindow.Add(editor);
 
 
         // Add menu to top of screen
@@ -73,7 +75,7 @@ public partial class MainWindow : Gtk.Window
         vbox.SetSizeRequest(editorWidth, editorHeight);
 
         // Add editor to vbox
-        vbox.Add(editor);
+        vbox.Add(editorWindow);
 
         // Add vbox to window
         Add(vbox);
@@ -225,8 +227,10 @@ public partial class MainWindow : Gtk.Window
             var consoleOutput = ConsoleOutput.Instance.GetOutput();
             if(consoleOutput != null){
                 GUI.ConsoleWindow consoleWindow = GUI.ConsoleWindow.Instance;
+                ScrolledWindow consoleWrapper = new ScrolledWindow();
                 TextView console = new TextView();
-                consoleWindow.Add(console);
+                consoleWrapper.Add(console);
+                consoleWindow.Add(consoleWrapper);
 
                 foreach (var line in consoleOutput)
                 {
