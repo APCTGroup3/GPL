@@ -234,7 +234,7 @@ namespace CoreParser
             if(Next == '/' || Current == '#') //Line comment
             { 
                 //Ignore everything until new line
-                while (!IsNewLine())
+                while (!IsNewLine() && !IsEndOfFile())
                 {
                     Advance();
                 }

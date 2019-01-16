@@ -1,0 +1,28 @@
+# Input
+arr = InitArray(50)
+i=0
+while i < Length(arr) do
+    arr[i] <- Random(1,1000)
+    i = i+1
+endwhile
+Print("Input array:")
+Print(arr)
+
+# Algorithm
+
+# Current highest number
+highestSoFar = arr[0]
+
+#Iterate over array, replace if higher than current highest
+
+i=1
+while i < Length(arr) {
+    if highestSoFar < arr[i] {
+	highestSoFar = arr[i]
+	}
+    i = i+1
+}
+
+#Print result
+Print("Highest number is " + highestSoFar)
+
