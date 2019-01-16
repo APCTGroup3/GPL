@@ -90,6 +90,42 @@ namespace CoreParser.Parser.StandardLibrary
                     return new Arr(i);
                 }
             ));
+
+            functions.Add(new Function("Random", new Type[] { typeof(Number), typeof(Number) },
+                args =>
+                {
+                    var min = (int)args[0].ToDouble();
+                    var max = (int)args[1].ToDouble();
+                    var rnd = new Random();
+
+                    var res = rnd.Next(min, max);
+                    return new Number(res);
+                }
+            ));
+
+            functions.Add(new Function("Int", new Type[] { typeof(Number) },
+                args =>
+                {
+                    return new Number((int)args[0].ToDouble());
+                }
+            ));
+
+            functions.Add(new Function("Min", new Type[] { typeof(Number), typeof(Number) },
+                args =>
+                {
+                    var n1 = args[0].ToDouble();
+                    var n2 = args[1].ToDouble();
+                    if (n1 <= n2)
+                    {
+                        return args[0];
+
+                    }
+                    else
+                    {
+                        return args[1];
+                    }
+                }
+            ));
         }
 
 
