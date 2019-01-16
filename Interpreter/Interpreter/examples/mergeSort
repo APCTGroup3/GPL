@@ -1,0 +1,93 @@
+arr = InitArray(10)
+i=0
+arr[0] = 3
+arr[1] = 1
+arr[2] = 3
+arr[3] = 5
+arr[4] = 7
+arr[5] = 3
+arr[6] = 6
+arr[7] = 9
+arr[8] = 2
+arr[9] = 4
+
+n=Length(arr)
+
+Print("Original Array:")
+Print(arr)
+
+currSize=1
+while currSize<=(n-1) {
+    leftStart=0
+    while leftStart<(n-1) {
+    
+        mid = Min(leftStart + currSize - 1, n - 1)
+        rightEnd = Min(leftStart + (2 * currSize - 1), n-1)
+        
+        
+        n1 = (mid - leftStart) + 1
+        n2 = rightEnd-mid
+        
+        
+        L = InitArray(n1)
+        R = InitArray(n2)
+        
+        i=0
+        while i<n1 do
+            L[i]=arr[leftStart+i]
+            i = i+1
+        endwhile
+        
+        i=0
+        while i<n2 do
+            R[i]=arr[mid + 1+ i]
+            i = i+1
+        endwhile
+        i=0
+        j=0
+        k = leftStart
+        
+        continue = 1>0     
+        if i >= n1 {
+            continue = 1>2
+        }
+        if j >= n2 {
+            continue = 1>2
+        }
+        while continue==1>0 {
+            if (L[i] <= R[j]) {
+                arr[k] = L[i]
+                i = i+1
+            } else {
+                arr[k] = R[j]
+                j = j+1
+            }
+            
+            k=k+1
+            if i >= n1 {
+                continue = 1>2
+            }
+            if j >= n2 {
+                continue = 1>2
+            }
+        }
+        
+        while i < n1 do
+            arr[k] = L[i]
+            i = i+1
+            k = k+1
+        endwhile
+        
+        while j < n2 do
+            arr[k] = R[j]
+            j = j+1
+            k = k+1
+        endwhile   
+        
+        leftStart = leftStart + 2*currSize
+    }
+    currSize = 2*currSize
+}
+
+Print("Sorted Array:")
+Print(arr)

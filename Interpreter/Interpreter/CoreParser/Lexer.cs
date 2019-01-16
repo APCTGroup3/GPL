@@ -299,14 +299,14 @@ namespace CoreParser
                 case ']':
                 case ':':
                 case ';':
-                case '=':
-                    Consume();
+                    Consume(); 
                     BuildToken(TokenTypes.op);
                     break;
 
                 case '<':
                 case '>':
                 case '!':
+                case '=':
                     Consume();
                     if (Current == '=')
                         Consume();
@@ -332,6 +332,7 @@ namespace CoreParser
                     }
                     BuildToken(TokenTypes.op);
                     break;
+
                 default:
                     throw new Exception("Unexpected symbol " + Current);
             }

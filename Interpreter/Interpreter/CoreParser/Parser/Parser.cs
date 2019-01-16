@@ -254,6 +254,10 @@ namespace CoreParser.Parser
                 while (!CurrentToken.token.Equals(")")) 
                 {
                     parameters.Add(ParseExpression());
+                    if (CurrentToken.token.Equals(","))
+                    {
+                        Consume();
+                    }
                 }
                 Consume(); //Consume closing )
                 FunctionNode node = new FunctionNode(name.Token);
