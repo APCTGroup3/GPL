@@ -83,6 +83,43 @@ namespace CoreParser.Parser.StandardLibrary
                 }
             ));
 
+            functions.Add(new Function("BinarySearch", new Type[] { typeof(Arr), typeof(Number) },
+                args =>
+                {
+                    var array = args[0].ToArr();
+                    var key = args[1].ToDouble();
+
+
+
+                    var low = 0;
+                    var high = array.Elements.Count;
+
+                    while(low <= high)
+                    {
+                        int mid = ((high+low) / 2);
+                        Console.WriteLine("High = {0}", high);
+                        Console.WriteLine("Low = {0}", low);
+                        Console.WriteLine("Mid = {0}", mid);
+                        Console.WriteLine("array[mid] = {0}\n\n", (int)array.Get(mid).ToDouble());
+                        Console.WriteLine("Key = {0}", key);
+
+                        if ((int)array.Get(mid).ToDouble() == (int)key)
+                        {
+                            return new Number(mid);
+                        }
+                        if((int)key > (int)array.Get(mid).ToDouble())
+                        {
+                            low = mid+1;
+                        }
+                        if ((int)key < (int)array.Get(mid).ToDouble())
+                        {
+                            high = mid-1;
+                        }
+                    }
+                    return new Number(-1);
+                }
+            ));
+
             functions.Add(new Function("InitArray", new Type[] { typeof(Number) },
                 args =>
                 {
@@ -125,7 +162,9 @@ namespace CoreParser.Parser.StandardLibrary
                         return args[1];
                     }
                 }
+
             ));
+
         }
 
 
