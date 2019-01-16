@@ -113,6 +113,10 @@ namespace CoreParser
             {
                 BuildToken(TokenTypes.eof);
             }
+            else if (IsComment())
+            {
+                ScanComment();
+            }
             else if (IsNewLine())
             {
                 ScanNewLine();
@@ -202,6 +206,18 @@ namespace CoreParser
         {
             return symbols.Contains(Current);
         }
+        private bool IsComment()
+        {
+            if (Current == '/')
+            {
+                return Next == '/' || Next == '*';
+            }
+            else if (Current == '#')
+            {
+                return true;
+            }
+            return false;
+        }
 
         //Checks if in-progress token is a reserved word
         private bool IsReservedWord()
@@ -215,9 +231,21 @@ namespace CoreParser
         //Methods for scanning and creating tokens
         private void ScanComment()
         {
-            //Ignore everything until new line
-            while(!IsNewLine())
+            if(Next == '/' || Current == '#') //Line comment
+            { 
+                //Ignore everything until new line
+                while (!IsNewLine())
+                {
+                    Advance();
+                }
+            }
+            else if (Next == '*') // /* */ Block Comment
             {
+                while (!(Current == '*' && Next == '/'))
+                {
+                    Advance();
+                }
+                Advance();
                 Advance();
             }
         }
