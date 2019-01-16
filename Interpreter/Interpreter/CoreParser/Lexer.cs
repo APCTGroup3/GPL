@@ -297,14 +297,18 @@ namespace CoreParser
                 case '}':
                 case '[':
                 case ']':
-                case ':':
                 case ';':
                     Consume(); 
                     BuildToken(TokenTypes.op);
                     break;
-
                 case '<':
+                    Consume();
+                    if (Current == '=' || Current == '-')
+                        Consume();
+                    BuildToken(TokenTypes.op);
+                    break;
                 case '>':
+                case ':':
                 case '!':
                 case '=':
                     Consume();
