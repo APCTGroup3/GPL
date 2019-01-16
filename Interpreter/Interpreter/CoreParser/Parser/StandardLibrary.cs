@@ -9,10 +9,9 @@ namespace CoreParser.Parser.StandardLibrary
     public class Function
     {
         public string Name { get; }
-
         private Type[] parameterTypes;
-
         private FunctionDelegate function;
+
          
         public Function(string name, Type[] types, FunctionDelegate func)
         {
@@ -44,6 +43,10 @@ namespace CoreParser.Parser.StandardLibrary
     public static class StandardLibrary
     {
         private static List<Function> functions = new List<Function>();
+
+
+        //Static variables used in functions
+        private static readonly Random rnd = new Random();
 
         public static Terminal Run(string name, params Terminal[] args)
         {
@@ -133,7 +136,6 @@ namespace CoreParser.Parser.StandardLibrary
                 {
                     var min = (int)args[0].ToDouble();
                     var max = (int)args[1].ToDouble();
-                    var rnd = new Random();
 
                     var res = rnd.Next(min, max);
                     return new Number(res);

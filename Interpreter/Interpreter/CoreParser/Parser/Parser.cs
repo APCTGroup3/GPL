@@ -322,7 +322,7 @@ namespace CoreParser.Parser
                                 throw new ParserException("Expected ], found " + CurrentToken.token);
                             }
 
-                            if (CurrentToken.token.Equals("="))
+                            if (CurrentToken.token.Equals("=") || CurrentToken.token.Equals("<-") || CurrentToken.token.Equals(":="))
                             {
                                 Consume();
                             }
