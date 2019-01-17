@@ -15,18 +15,18 @@ namespace NLP_Lexer
 
             NLP_Lexer.Lexer nlpLexer = new NLP_Lexer.Lexer(ACCESS_TOKEN);
 
-            string inp_a = "b = add 3 and 7";
-            string inp_b = "print b";
+            string inp_a = "print add 4 and 5";
+            //string inp_b = "print b";
 
             string lex_chunk_a = nlpLexer.Tokenise(inp_a);
-            string lex_chunk_b = nlpLexer.Tokenise(inp_b);
+            //string lex_chunk_b = nlpLexer.Tokenise(inp_b);
 
-            Console.WriteLine("Input = \n\t" + inp_a + "\n\t" + inp_b);
+            Console.WriteLine("Input = \n\t" + inp_a);
 
-            Console.WriteLine(lex_chunk_a + "\n" + lex_chunk_b);
+            Console.WriteLine(lex_chunk_a);
             try
             {
-                CoreParser.Lexer lexer = new CoreParser.Lexer(lex_chunk_a + "\n" + lex_chunk_b);
+                CoreParser.Lexer lexer = new CoreParser.Lexer(lex_chunk_a);
                 lexer.Tokenise();
                 List<Token> tokens = lexer.getTokenList();
                 CoreParser.Parser.Parser parser = new CoreParser.Parser.Parser();

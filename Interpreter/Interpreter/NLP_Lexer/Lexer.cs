@@ -13,28 +13,27 @@ namespace NLP_Lexer
 
         public string Tokenise(string line)
         {
+            // Create a new wit client to connect to wit.ai
             Wit client = new Wit(accessToken: ACCESS_TOKEN);
 
+            // Get wit response
             var response = client.Message(line);
 
-            string lex_chunk = string.Empty;
 
-            foreach (var entity in response.Entities)
-            {
-                Console.WriteLine(entity);
-            }
+            string lex_chunk = string.Empty;
 
             // Reflects BIDMAS order of operations
 
             if (response.Entities.ContainsKey("identity"))
             {
+                // Deal with identities
                 string ident = (string) response.Entities["identity"][0]["value"];
 
+                // Add to lex_chunk
                 lex_chunk += ident;
 
                 // Only do assignment if first character in the line is a variable, followed by equals
-
-                if (line.Substring(0,1) == ident && (line.Substring(1, 1) == "=" || line.Substring(1, 2) == " =" || line.Substring(1, 2) == " = ") ) /*Obviously this is very hacky and should be replaced ASAP*/
+                if (line.Substring(0,1) == ident && (line.Substring(1, 1) == "=" || line.Substring(1, 2) == " =" || line.Substring(1, 2) == " = ") )
                 {
                     lex_chunk += " = ";
                 }
@@ -42,6 +41,7 @@ namespace NLP_Lexer
 
             if (response.Entities.ContainsKey("divide"))
             {
+                // Divide 
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -72,6 +72,7 @@ namespace NLP_Lexer
 
             if (response.Entities.ContainsKey("multiply"))
             {
+                // Multiply 
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -103,7 +104,8 @@ namespace NLP_Lexer
 
             if (response.Entities.ContainsKey("add"))
             {
-                if(response.Entities["number"].Count > 0)
+                // Add 
+                if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
                     {
@@ -133,7 +135,7 @@ namespace NLP_Lexer
 
             if (response.Entities.ContainsKey("subtract"))
             {
-                // Look into intent //
+                // Subtract 
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -164,6 +166,7 @@ namespace NLP_Lexer
 
             if (response.Entities.ContainsKey("function"))
             {
+                // Deal with functions
                 var function_name = response.Entities["function"][0]["value"];
                 lex_chunk = lex_chunk.Insert(0, function_name + "(");
                 lex_chunk += ")";

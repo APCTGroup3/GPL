@@ -69,6 +69,7 @@
       <HintPath>..\packages\MatheusFroes.Wit.NET.1.0.3\lib\net452\Wit.NET.dll</HintPath>
     </Reference>
     <Reference Include="EngineLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -83,6 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsoleWindow.cs" />
     <Compile Include="gtk-gui\GUI.ConsoleWindow.cs" />
+    <Compile Include="ParseTreeDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

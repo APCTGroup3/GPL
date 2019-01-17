@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Gtk;
 using CoreParser;
 using System.Collections.Generic;
@@ -14,7 +14,9 @@ public partial class MainWindow : Gtk.Window
     bool programIsSaved = false;
     string fileName = string.Empty;
     bool useNLPLexer = false;
-    ToolButton nlpLexerSwitchBtn = new ToolButton(Stock.Execute);
+    bool useParseTreeDisplay = false;
+    TextView infoTextView = new TextView();
+    ToolButton nlpLexerSwitchBtn;
 
     public MainWindow() : base(Gtk.WindowType.Toplevel)
     {
@@ -46,22 +48,32 @@ public partial class MainWindow : Gtk.Window
         runBtn.TooltipText = "Run the program";
         runBtn.Clicked += RunBtnClicked;
 
-        this.nlpLexerSwitchBtn.ModifyBg(StateType.Normal, new Gdk.Color(255,0,0));
+
+        this.nlpLexerSwitchBtn = new ToolButton(Stock.DialogWarning); // NLP Lexer button displayed with warning as it's experimental
         this.nlpLexerSwitchBtn.TooltipText = "Toggle the experimental NLP lexer";
         this.nlpLexerSwitchBtn.Clicked += nlpLexerSwitchBtnClicked;
+
+        ToolButton parseTreeSwitchBtn = new ToolButton(Stock.Indent);
+        parseTreeSwitchBtn.TooltipText = "Toggle the Parse Tree display";
+        parseTreeSwitchBtn.Clicked += ParseTreeSwitchBtnClicked;
+
 
         //Add menu items to menu bar
         menu.Insert(newBtn, 0);
         menu.Insert(openBtn, 1);
         menu.Insert(saveBtn, 2);
         menu.Insert(runBtn, 3);
-        menu.Insert(this.nlpLexerSwitchBtn, 4);
+        menu.Insert(new SeparatorToolItem(), 4); // Seperate NLP toggle from other buttons
+        menu.Insert(this.nlpLexerSwitchBtn, 5);
+        menu.Insert(parseTreeSwitchBtn, 5);
+        menu.ShowAll();
+
+
 
         //Create Horizontal pane
-        //HPaned hpane = new HPaned();
 
         //Create TextView
-        var editorWindow = new ScrolledWindow();
+        var editorWindow = new ScrolledWindow(); // Make TextView Scrollable
         editor = new TextView();
         int editorWidth = this.editor.SizeRequest().Width + 10;
         int editorHeight = this.editor.SizeRequest().Height + 10;
@@ -77,13 +89,15 @@ public partial class MainWindow : Gtk.Window
 
         // Add editor to vbox
         vbox.Add(editorWindow);
-
+        vbox.PackEnd(this.infoTextView, false, false, 0);
+        this.infoTextView.Visible = true;
         // Add vbox to window
         Add(vbox);
 
         // Display all children
         ShowAll();
     }
+
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
     {
@@ -215,6 +229,11 @@ public partial class MainWindow : Gtk.Window
 
                 ParserEngine.Engine.Engine engine = new Engine.Engine();
                 engine.Run(ast);
+
+                // Open a new window
+                GUI.ParseTreeDisplay parseTreeDisplay = new GUI.ParseTreeDisplay(ast);
+                parseTreeDisplay.Title = "Parse Tree";
+                parseTreeDisplay.ShowAll();
             }
             catch (Exception e)
             {
@@ -228,31 +247,19 @@ public partial class MainWindow : Gtk.Window
             var consoleOutput = ConsoleOutput.Instance.GetOutput();
             if(consoleOutput != null){
                 GUI.ConsoleWindow consoleWindow = GUI.ConsoleWindow.Instance;
-                ScrolledWindow consoleWrapper = new ScrolledWindow();
+                ScrolledWindow consoleWrapper = new ScrolledWindow(); // Make Console Window scrollable
                 TextView console = new TextView();
                 consoleWrapper.Add(console);
                 consoleWindow.Add(consoleWrapper);
 
                 foreach (var line in consoleOutput)
                 {
-                    Console.WriteLine("--------------------------------------------------");
-                    Console.WriteLine(line);
                     // Write output to console window
                     console.Buffer.Text = console.Buffer.Text + "\n" + line;
-                    Console.WriteLine("--------------------------------------------------");
                 }
                 consoleWindow.ShowAll();
 
             }
-
-
-
-            //parser.PrintTree(ast);
-
-            // Open a new window
-            //GPLGUI.ParseTreeDisplay parseTreeDisplay = new GPLGUI.ParseTreeDisplay(ast);
-            //parseTreeDisplay.Title = "Parse Tree";
-            //parseTreeDisplay.Show();
 
         }
     }
@@ -264,8 +271,22 @@ public partial class MainWindow : Gtk.Window
             this.editor.ModifyBg(StateType.Normal, new Gdk.Color(255, 122, 122));
         } else {
             this.editor.ModifyBg(StateType.Normal, new Gdk.Color(249, 249, 249));
+
         }
+
     }
 
+    void ParseTreeSwitchBtnClicked(object sender, EventArgs e)
+    {
+        this.useParseTreeDisplay = !this.useParseTreeDisplay;
+        if (this.useParseTreeDisplay)
+        {
+            this.infoTextView.Buffer.Text = "Using Parse Tree Display";
+        }
+        else
+        {
+            this.infoTextView.Buffer.Text = "";
+        };
+    }
 
 }

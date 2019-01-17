@@ -40,7 +40,7 @@ namespace CoreParser.Parser
         private Node ParseStatements(string startScope)
         {
 
-            BlockNode node = new BlockNode(new Token());
+            BlockNode node = new BlockNode(CurrentToken);
             List<Node> statements = new List<Node>();
             //if (startScope != null)
             bool inScope = true;
@@ -105,6 +105,8 @@ namespace CoreParser.Parser
 
         private Node ParseIf()
         {
+            var token = CurrentToken;
+            
             Consume();
             Node condition = ParseExpression();
             Node statements = null;
@@ -145,7 +147,7 @@ namespace CoreParser.Parser
             //Check for else statement
             Node elseStatements = ParseElse();
 
-            Node node = (elseStatements == null) ? new IfNode(new Token(), condition, statements) : new IfNode(new Token(), condition, statements, elseStatements);
+            Node node = (elseStatements == null) ? new IfNode(token, condition, statements) : new IfNode(token, condition, statements, elseStatements);
                 return node;
         }
 
@@ -202,6 +204,8 @@ namespace CoreParser.Parser
         {
             if (CurrentToken.tokenType == TokenTypes.keyword && CurrentToken.token == "while")
             {
+                var token = CurrentToken;
+
                 Consume();
                 Expression condition = (Expression)ParseExpression();
                 Node statements = null;
@@ -238,7 +242,7 @@ namespace CoreParser.Parser
                         statements = ParseStatement();
                     }
                 }
-                Node node = new WhileNode(new Token(), condition, statements);
+                Node node = new WhileNode(token, condition, statements);
                 return node;
             }
             throw new ParserException("Expected \"if\", found " + CurrentToken.token);
@@ -561,49 +565,6 @@ namespace CoreParser.Parser
             }
         }
 
-        //public static void Main(string[] args)
-        //{
-        //    var parser = new Parser();
-
-        //    Lexer l = new Lexer("(453.6^4/3)+64-2.2^5");
-        //    l.Tokenise();
-        //    foreach (var token in l.getTokenList())
-        //    {
-        //        Console.Write("\"" + token.token + "\", " );
-        //    }
-        //    Console.Write("\n");
-
-        //    var tokens = new List<Token>(); //(47.6^(4)*49)+59*43/(4-3)^2
-        //    tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "47.6", type=TokenTypes.constant });
-        //    tokens.Add(new Token() { token = "^", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "(" , type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "*", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "49", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = "+", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "59", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = "*", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "-", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "43", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = "/", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "(", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "4", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = "-", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "3", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = ")", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "^", type = TokenTypes.op });
-        //    tokens.Add(new Token() { token = "2", type = TokenTypes.constant });
-        //    tokens.Add(new Token() { token = ")" , type = TokenTypes.op });
-
-
-
-
-        //    var ast = parser.Parse(tokens);
-        //    parser.PrintTree(ast);
-        //}
-
         private void Consume()
         {
             pos++;
@@ -615,7 +576,7 @@ namespace CoreParser.Parser
             {
                 if (pos >= Tokens.Count)
                 {
-                    return new Token(){tokenType = TokenTypes.eof};
+                    return new Token(){tokenType = TokenTypes.eof, token="EOF"};
                 }
                 return Tokens[pos];
             }
