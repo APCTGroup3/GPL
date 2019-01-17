@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace CoreParser.Parser.AST
 {
+    //Represents a block (series) of statements that should be executed sequentially
     public class BlockNode : Node
     {
-        public List<Node> Statements { get; set; }
+        public List<Node> Statements { get; set; } //The statements to execute, in the order they should be executed
         public BlockNode(Token token) : base(token) 
         {
             Statements = new List<Node>();

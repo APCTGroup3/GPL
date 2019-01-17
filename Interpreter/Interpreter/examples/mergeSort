@@ -43,14 +43,14 @@ while currSize<=(n-1) {
         j=0
         k = leftStart
         
-        continue = 1>0     
+        continue = true     
         if i >= n1 {
-            continue = 1>2
+            continue = false
         }
         if j >= n2 {
-            continue = 1>2
+            continue = false
         }
-        while continue==1>0 {
+        while continue {
             if (L[i] <= R[j]) {
                 arr[k] = L[i]
                 i = i+1
@@ -61,10 +61,10 @@ while currSize<=(n-1) {
             
             k=k+1
             if i >= n1 {
-                continue = 1>2
+                continue = false
             }
             if j >= n2 {
-                continue = 1>2
+                continue = false
             }
         }
         

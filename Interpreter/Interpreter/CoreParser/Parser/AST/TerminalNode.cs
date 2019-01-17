@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace CoreParser.Parser.AST
 {
-    public class TerminalNode : Expression
+    /* Represents a terminal (return) type within the AST,
+     * such as a number, boolean, String etc
+     */
+    public class TerminalNode : Node
     {
         public TerminalNode(Token token) : base(token) { }
 

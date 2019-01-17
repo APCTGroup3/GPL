@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace CoreParser.Parser.AST
 {
+    /*
+     * A Node defining a while loop, containing a condition Node which should evaluate to a boolean,
+     * and a block of statements to execute while the condition is true.
+     */    
     public class WhileNode : Node
     {
         public Node Condition { get; set; }
