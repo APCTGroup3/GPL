@@ -25,7 +25,7 @@ namespace GUI
 
         void OnExpose(object sender, EventArgs eventArgs)
         {
-            Console.WriteLine("OnExpose");
+            //Console.WriteLine("OnExpose");
             DrawingArea drawingArea = this.tree;
             Cairo.Context ctx = Gdk.CairoHelper.Create(drawingArea.GdkWindow);
 

@@ -207,7 +207,7 @@ namespace CoreParser.Parser
                 var token = CurrentToken;
 
                 Consume();
-                Expression condition = (Expression)ParseExpression();
+                Node condition = ParseExpression();
                 Node statements = null;
                 if (CurrentToken.token == "do")
                 {

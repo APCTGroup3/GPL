@@ -8,7 +8,7 @@ namespace CoreParser.Parser.AST
         public Node Condition { get; set; }
         public Node Block { get; set; }
         public WhileNode(Token token) : base(token) { }
-        public WhileNode(Token token, Expression condition, Node block) : base(token)
+        public WhileNode(Token token, Node condition, Node block) : base(token)
         {
             Condition = condition;
             Block = block;
