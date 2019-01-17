@@ -2,7 +2,7 @@
 module Context =
     open System
     open System.Collections.Generic
-    open CoreParser
+    open EngineLibrary
 
     type Context() =
         let mutable varStore: Collections.Generic.Dictionary<string, Terminal> = new Collections.Generic.Dictionary<string, Terminal>()

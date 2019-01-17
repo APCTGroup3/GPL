@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace CoreParser
+namespace EngineLibrary
 {
     // Singleton class to just handle execution output
     public sealed class ConsoleOutput

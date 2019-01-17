@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLP_Lexer", "NLP_Lexer\NLP_Lexer.csproj", "{E366C373-DB4E-44A7-933E-15F706A7334B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineLibrary", "EngineLibrary\EngineLibrary.csproj", "{C836BB5B-A805-4416-BDE8-60D18C2A1DFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +33,10 @@ Global
 		{E366C373-DB4E-44A7-933E-15F706A7334B}.Debug|x86.Build.0 = Debug|Any CPU
 		{E366C373-DB4E-44A7-933E-15F706A7334B}.Release|x86.ActiveCfg = Release|Any CPU
 		{E366C373-DB4E-44A7-933E-15F706A7334B}.Release|x86.Build.0 = Release|Any CPU
+		{C836BB5B-A805-4416-BDE8-60D18C2A1DFD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C836BB5B-A805-4416-BDE8-60D18C2A1DFD}.Debug|x86.Build.0 = Debug|Any CPU
+		{C836BB5B-A805-4416-BDE8-60D18C2A1DFD}.Release|x86.ActiveCfg = Release|Any CPU
+		{C836BB5B-A805-4416-BDE8-60D18C2A1DFD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

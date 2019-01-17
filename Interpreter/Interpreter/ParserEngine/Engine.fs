@@ -6,6 +6,7 @@ module Engine =
     open System.Collections
     open CoreParser.Parser.AST
     open CoreParser
+    open EngineLibrary
 
     type Engine() = 
         let mutable Stack : Collections.Generic.Stack<Context> = new Collections.Generic.Stack<Context>() //Variable stack
@@ -134,7 +135,7 @@ module Engine =
             let nodeParams = node.Parameters
             let parameters = Array.init nodeParams.Count (fun i -> this.Visit(nodeParams.[i]))
             let name = node.Token.token
-            let result = Parser.StandardLibrary.StandardLibrary.Run(name, parameters)
+            let result = StandardLibrary.Run(name, parameters)
             result
 
         member this.Visit_While(node:WhileNode) =

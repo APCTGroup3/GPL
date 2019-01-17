@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoreParser.Parser.StandardLibrary
+namespace EngineLibrary
 {
     public delegate Terminal FunctionDelegate(params Terminal[] parameters);
 

@@ -68,6 +68,7 @@
     <Reference Include="Wit.NET">
       <HintPath>..\packages\MatheusFroes.Wit.NET.1.0.3\lib\net452\Wit.NET.dll</HintPath>
     </Reference>
+    <Reference Include="EngineLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">

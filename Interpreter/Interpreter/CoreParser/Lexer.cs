@@ -106,7 +106,7 @@ namespace CoreParser
             BuildToken(TokenTypes.eof);
         }
 
-        public void ProcessNextToken()
+        private void ProcessNextToken()
         {
             //Attempt to create tokens depending on current char
             if (IsEndOfFile()) //If file is empty

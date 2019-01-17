@@ -9,5 +9,6 @@
     <Compile Include="Program.fs" />
     <None Include="test.txt" />
     <ProjectReference Include="..\CoreParser\CoreParser.csproj" />
+    <ProjectReference Include="..\EngineLibrary\EngineLibrary.csproj" />
   </ItemGroup>
 </Project>

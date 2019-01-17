@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using CoreParser.Parser;
 
-namespace CoreParser
+namespace EngineLibrary
 {
     public abstract class Terminal
     {
@@ -100,7 +99,7 @@ namespace CoreParser
         {
             if (index < 0)
             {
-                throw new ParserException("Index cannot be negative");
+                throw new EngineException("Index cannot be negative");
             }
             if (index >= Elements.Count)
             {
@@ -123,11 +122,11 @@ namespace CoreParser
         {
             if (i < 0)
             {
-                throw new ParserException("Index cannot be negative");
+                throw new EngineException("Index cannot be negative");
             }
             else if (i >= Elements.Count)
             {
-                throw new ParserException("Array index out of bounds");
+                throw new EngineException("Array index out of bounds");
             }
             return ((Terminal)Elements[i]);
 
