@@ -11,4 +11,7 @@
     <ProjectReference Include="..\CoreParser\CoreParser.csproj" />
     <ProjectReference Include="..\EngineLibrary\EngineLibrary.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="4.5.4" />
+  </ItemGroup>
 </Project>

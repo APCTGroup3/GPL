@@ -285,7 +285,7 @@ namespace CoreParser.Parser
                 try
                 {
                     //If next token is valid assignment operator or array element then assume assignment
-                    if (Tokens[pos + 1].tokenType == TokenTypes.op && (Tokens[pos + 1].token.Equals("=") || Tokens[pos + 1].token.Equals("[")))
+                    if (Tokens[pos + 1].tokenType == TokenTypes.op && (Tokens[pos + 1].token.Equals("=") || Tokens[pos + 1].token.Equals(":=") || Tokens[pos + 1].token.Equals("<-") || Tokens[pos + 1].token.Equals("[")))
                     {
                         var id = ParseVarName();
                         if (CurrentToken.token.Equals("[")) //Array element assignment
