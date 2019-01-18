@@ -6,6 +6,8 @@ namespace NLP_Lexer
     public class Lexer
     {
         public string ACCESS_TOKEN { get; set; }
+
+        // Set access token on object creation
         public Lexer(string accessToken)
         {
             this.ACCESS_TOKEN = accessToken;
@@ -42,6 +44,8 @@ namespace NLP_Lexer
             if (response.Entities.ContainsKey("divide"))
             {
                 // Divide 
+
+                // Outputs x / y
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -73,6 +77,7 @@ namespace NLP_Lexer
             if (response.Entities.ContainsKey("multiply"))
             {
                 // Multiply 
+                // output x * y
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -105,6 +110,7 @@ namespace NLP_Lexer
             if (response.Entities.ContainsKey("add"))
             {
                 // Add 
+                // outpus x + y
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)
@@ -136,6 +142,7 @@ namespace NLP_Lexer
             if (response.Entities.ContainsKey("subtract"))
             {
                 // Subtract 
+                // outputs x - y
                 if (response.Entities["number"].Count > 0)
                 {
                     if (response.Entities["number"].Count == 1)

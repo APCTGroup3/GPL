@@ -19,7 +19,7 @@ namespace GUI
         {
             this.Build();
         }
-
+        // Return Console Window instance
         public static ConsoleWindow Instance
         {
             get
