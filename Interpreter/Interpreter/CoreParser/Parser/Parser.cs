@@ -462,8 +462,12 @@ namespace CoreParser.Parser
         private Node ParseEquality()
         {
             var left = ParseComparison();
-            if (Match(TokenTypes.op, "==", "eq", "equals", "!=", "neq", "notequ"))
+            if (Match(TokenTypes.op, "==", "eq", "equals", "!=", "neq", "notequal"))
             {
+                if (Match(TokenTypes.op, "==", "eq", "equals", "equal"))
+                    CurrentToken.token = "==";
+                if (Match(TokenTypes.op, "!=", "neq", "notequal"))
+                    CurrentToken.token = "!=";
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
@@ -483,6 +487,20 @@ namespace CoreParser.Parser
             var left = ParseAdd();
             if (Match(TokenTypes.op, "<", "lt", "lessthan", "<=", "lte", "lessthanequal", ">", "gt", "greaterthan", ">=", "gte", "greaterthanequal"))
             {
+                if (Match(TokenTypes.op, "<", "lt", "lessthan"))
+                    CurrentToken.token = "<";
+                if (Match(TokenTypes.op,  ">", "gt", "greaterthan"))
+                {
+                    CurrentToken.token = ">";
+                }
+                if(Match(TokenTypes.op, "gte", "greaterthanequal"))
+                {
+                    CurrentToken.token = ">=";
+                }
+                if (Match(TokenTypes.op, "lte", "lessthanequal"))
+                {
+                    CurrentToken.token = "<=";
+                }
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();

@@ -17,7 +17,7 @@ namespace CoreParser
         };
         private static string[] reservedOps =
         {
-            "and", "or"
+            "and", "or", "lt", "gt", "lte", "gte", "lessthan", "greaterthan", "greaterthanequal", "lessthanequal", "equals", "eq", "neq", "notequal", "equal"
         };
         private static string[] reservedBools =
         {

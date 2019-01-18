@@ -63,7 +63,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.106.6.7\lib\net452\RestSharp.dll</HintPath>
+      <HintPath>..\packages\RestSharp.106.4.2\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="Wit.NET">
       <HintPath>..\packages\MatheusFroes.Wit.NET.1.0.3\lib\net452\Wit.NET.dll</HintPath>
