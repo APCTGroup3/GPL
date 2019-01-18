@@ -1,10 +1,14 @@
 ﻿using System;
 namespace GUI
 {
+
+    // Singleton Class only allowing one console window
     public partial class ConsoleWindow : Gtk.Window
     {
-
+        // Do not allow set on instance
         private static readonly ConsoleWindow instance = new ConsoleWindow();
+
+
 
         static ConsoleWindow()
         {
@@ -15,6 +19,7 @@ namespace GUI
         {
             this.Build();
         }
+
         public static ConsoleWindow Instance
         {
             get

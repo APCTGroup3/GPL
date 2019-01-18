@@ -10,13 +10,16 @@ using NLP_Lexer;
 public partial class MainWindow : Gtk.Window
 {
 
-    TextView editor;
-    bool programIsSaved = false;
-    string fileName = string.Empty;
+    TextView editor; // Editor has to belong to class to allow other methods access
+    bool programIsSaved = false; // Store saved state of the program
+    string fileName = string.Empty; // Initialise empty file name
+
+    //Allows checks whether user wants to use NLP or parse tree display
     bool useNLPLexer = false;
     bool useParseTreeDisplay = false;
+
+    // Must be accessed in multiple methods to set text
     TextView infoTextView = new TextView();
-    ToolButton nlpLexerSwitchBtn;
 
     public MainWindow() : base(Gtk.WindowType.Toplevel)
     {
@@ -48,10 +51,9 @@ public partial class MainWindow : Gtk.Window
         runBtn.TooltipText = "Run the program";
         runBtn.Clicked += RunBtnClicked;
 
-
-        this.nlpLexerSwitchBtn = new ToolButton(Stock.DialogWarning); // NLP Lexer button displayed with warning as it's experimental
-        this.nlpLexerSwitchBtn.TooltipText = "Toggle the experimental NLP lexer";
-        this.nlpLexerSwitchBtn.Clicked += nlpLexerSwitchBtnClicked;
+        ToolButton nlpLexerSwitchBtn = new ToolButton(Stock.DialogWarning); // NLP Lexer button displayed with warning as it's experimental
+        nlpLexerSwitchBtn.TooltipText = "Toggle the experimental NLP lexer";
+        nlpLexerSwitchBtn.Clicked += nlpLexerSwitchBtnClicked;
 
         ToolButton parseTreeSwitchBtn = new ToolButton(Stock.Indent);
         parseTreeSwitchBtn.TooltipText = "Toggle the Parse Tree display";
@@ -63,14 +65,12 @@ public partial class MainWindow : Gtk.Window
         menu.Insert(openBtn, 1);
         menu.Insert(saveBtn, 2);
         menu.Insert(runBtn, 3);
-        menu.Insert(new SeparatorToolItem(), 4); // Seperate NLP toggle from other buttons
-        menu.Insert(this.nlpLexerSwitchBtn, 5);
+        menu.Insert(new SeparatorToolItem(), 4); // Seperate NLP toggle and parse tree toggle from other buttons
+        menu.Insert(nlpLexerSwitchBtn, 5);
         menu.Insert(parseTreeSwitchBtn, 5);
         menu.ShowAll();
 
 
-
-        //Create Horizontal pane
 
         //Create TextView
         var editorWindow = new ScrolledWindow(); // Make TextView Scrollable
@@ -89,8 +89,11 @@ public partial class MainWindow : Gtk.Window
 
         // Add editor to vbox
         vbox.Add(editorWindow);
+
+        //Add info view to bottom of window
         vbox.PackEnd(this.infoTextView, false, false, 0);
-        this.infoTextView.Visible = true;
+        this.infoTextView.Visible = true; // Make sure info view is visible
+
         // Add vbox to window
         Add(vbox);
 
@@ -105,40 +108,37 @@ public partial class MainWindow : Gtk.Window
         a.RetVal = true;
     }
 
+    //New Button event
     void NewBtnClicked(object sender, EventArgs eventArgs)
     {
-        if (!this.programIsSaved)
-        {
-            MessageDialog messageDialog = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.Close, "Make sure you've saved your work!");
-
-            ResponseType response = (ResponseType)messageDialog.Run();
-
-            if (response == ResponseType.Close || response == ResponseType.DeleteEvent)
-            {
-                messageDialog.Destroy();
-            }
-        }
-        else
-        {
-            editor.Buffer.Text = "";
-            this.fileName = string.Empty;
-        }
+        //Clear everything relating to the current file
+        editor.Buffer.Text = ""; 
+        this.fileName = string.Empty;
     }
 
     void SaveBtnClicked(object sender, EventArgs eventArgs)
     {
-        this.programIsSaved = true;
+        Console.WriteLine("Save");
+        // Check for filename, if it has one just write straight away
         if (this.fileName == string.Empty)
         {
+            // Open file chooser dialog with save action
             Gtk.FileChooserDialog fileChooserDialog = new Gtk.FileChooserDialog("Choose where to save your file",
                                                                                 this,
                                                                                 FileChooserAction.Save,
                                                                                 "Cancel", ResponseType.Cancel,
                                                                                 "Save", ResponseType.Accept);
+
+            // Run the dialog by casting the return from run to a ResponseType object
             ResponseType response = (ResponseType)fileChooserDialog.Run();
+
+            // Check the response type
             if (response == ResponseType.Accept)
             {
+                // Only write the file if the user selects accept
                 this.fileName = fileChooserDialog.Filename;
+                System.IO.File.WriteAllText(this.fileName, editor.Buffer.Text);
+                this.programIsSaved = true;
             }
             if (response == ResponseType.Cancel)
             {
@@ -146,7 +146,6 @@ public partial class MainWindow : Gtk.Window
             }
             fileChooserDialog.Destroy();
         }
-        System.IO.File.WriteAllText(this.fileName, editor.Buffer.Text);
     }
 
     void OpenBtnClicked(object sender, EventArgs eventArgs)
@@ -168,6 +167,7 @@ public partial class MainWindow : Gtk.Window
 
         if (response == ResponseType.Accept)
         {
+            // Set filename and open selected file
             this.fileName = fileChooserDialog.Filename;
             System.IO.FileStream fileStream = System.IO.File.OpenRead(this.fileName);
 
@@ -181,6 +181,7 @@ public partial class MainWindow : Gtk.Window
             editor.Buffer.Text = fileText;
 
 
+            //Close the filestream for safety
             fileStream.Close();
         }
         if (response == ResponseType.Cancel)
@@ -192,7 +193,7 @@ public partial class MainWindow : Gtk.Window
 
     void RunBtnClicked(object sender, EventArgs eventArgs)
     {
-        Console.WriteLine("Execute the program!");
+        //Execute the program
 
         string sourceCode = editor.Buffer.Text;
 
@@ -201,12 +202,12 @@ public partial class MainWindow : Gtk.Window
             if (this.useNLPLexer) {
                 // use the NLP lexer to format the code
                 var lines = sourceCode.Split('\n');
-                NLP_Lexer.Lexer nlpLexer = new NLP_Lexer.Lexer("7DOTRBXV6DLL22FQUJRKOMSCOEUL5XG5");
-                string tempSourceCode = "";
-                foreach(var line in lines)
+                NLP_Lexer.Lexer nlpLexer = new NLP_Lexer.Lexer("7DOTRBXV6DLL22FQUJRKOMSCOEUL5XG5"); // Create NLP Lexer with access token for wit.ai
+                string tempSourceCode = ""; // Init
+                foreach(var line in lines) //Loop through lines
                 {
                     try {
-                        tempSourceCode += nlpLexer.Tokenise(line);
+                        tempSourceCode += nlpLexer.Tokenise(line); // Add wit ai output to sourcecode
                         Console.WriteLine(tempSourceCode);
                     }
                     catch (Exception e)
@@ -214,27 +215,40 @@ public partial class MainWindow : Gtk.Window
                         Console.WriteLine(e.Message);
                     }
                 }
+                // Make sure that there is code in ttempSourceCode before executing it
                 if(tempSourceCode.Length > 0)
                 {
                     sourceCode = tempSourceCode;
                 }
             }
+
+            // Start the exectuion
+
             CoreParser.Lexer lexer = new CoreParser.Lexer(sourceCode);
             try
             {
+                // Tokenise
                 lexer.Tokenise();
                 List<Token> tokens = lexer.getTokenList();
+
+                // Parse from returned token list
                 CoreParser.Parser.Parser parser = new CoreParser.Parser.Parser();
                 CoreParser.Parser.AST.Node ast = parser.Parse(tokens);
 
+                // Execute the parse tree
                 ParserEngine.Engine.Engine engine = new Engine.Engine();
                 engine.Run(ast);
 
-                // Open a new window
-                GUI.ParseTreeDisplay parseTreeDisplay = new GUI.ParseTreeDisplay(ast);
-                parseTreeDisplay.Title = "Parse Tree";
-                parseTreeDisplay.ShowAll();
+                // Display parse tree if user has toggled it
+                if (this.useParseTreeDisplay)
+                {
+                    // Open a new window
+                    GUI.ParseTreeDisplay parseTreeDisplay = new GUI.ParseTreeDisplay(ast);
+                    parseTreeDisplay.Title = "Parse Tree";
+                    parseTreeDisplay.ShowAll();
+                }
             }
+            // Display errors encountered during execution in alert
             catch (Exception e)
             {
                 MessageDialog md = new MessageDialog(this,
@@ -244,14 +258,17 @@ public partial class MainWindow : Gtk.Window
                 md.Destroy();
             }
 
+            // Collect console output
             var consoleOutput = ConsoleOutput.Instance.GetOutput();
             if(consoleOutput != null){
+                // As long as there is console output, get the window and display it
                 GUI.ConsoleWindow consoleWindow = GUI.ConsoleWindow.Instance;
                 ScrolledWindow consoleWrapper = new ScrolledWindow(); // Make Console Window scrollable
                 TextView console = new TextView();
                 consoleWrapper.Add(console);
                 consoleWindow.Add(consoleWrapper);
 
+                // Write the console output to the console window
                 foreach (var line in consoleOutput)
                 {
                     // Write output to console window
@@ -266,6 +283,7 @@ public partial class MainWindow : Gtk.Window
 
     void nlpLexerSwitchBtnClicked(object sender, EventArgs eventArgs)
     {
+        // Toggle NLP lexer and show red border
         this.useNLPLexer = !this.useNLPLexer;
         if (this.useNLPLexer) {
             this.editor.ModifyBg(StateType.Normal, new Gdk.Color(255, 122, 122));
@@ -278,6 +296,7 @@ public partial class MainWindow : Gtk.Window
 
     void ParseTreeSwitchBtnClicked(object sender, EventArgs e)
     {
+        // Toggle parse tree display and display text indicating the current state
         this.useParseTreeDisplay = !this.useParseTreeDisplay;
         if (this.useParseTreeDisplay)
         {
