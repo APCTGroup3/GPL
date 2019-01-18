@@ -13,7 +13,7 @@ namespace CoreParser
         //Reserved words
         private static string[] reservedKeywords =
         {
-            "for", "do", "if", "else", "then", "while", "elif", "add", "subtract", "minus", "divide", "multiply"
+            "for", "do", "if", "else", "then", "while", "elif", "add", "plus", "subtract", "minus", "divide", "multiply"
         };
         private static string[] reservedOps =
         {
