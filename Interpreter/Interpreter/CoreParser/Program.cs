@@ -5,6 +5,7 @@ using CoreParser.Parser.AST;
 
 namespace CoreParser
 {
+    /* Main class for parser for debugging purposes */
     class MainClass
     {
         public static void Main(string[] args)

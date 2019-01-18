@@ -115,6 +115,9 @@ namespace CoreParser.Parser
                         return ParseIf();
                     case "while":
                         return ParseWhile();
+                    case "do":
+                        Consume();
+                        return ParseStatement();
                     default:
                         throw new Exception(CurrentToken.token + " not implemented yet");
                 }
@@ -496,8 +499,16 @@ namespace CoreParser.Parser
         private Node ParseAdd()
         {
             var left = ParseMult();
-            if (Match(TokenTypes.op, "+", "add", "plus", "-", "subtract"))
+            if (Match(TokenTypes.keyword, "add", "plus", "subtract")  || Match(TokenTypes.op, "+", "-"))
             {
+                if (Match(TokenTypes.op, "+") || Match(TokenTypes.keyword, "add", "plus"))
+                {
+                    CurrentToken.token = "+";
+                }
+                else if (Match(TokenTypes.op, "-") || Match(TokenTypes.keyword, "subtract"))
+                {
+                    CurrentToken.token = "-";
+                }
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
@@ -514,15 +525,24 @@ namespace CoreParser.Parser
         private Node ParseMult()
         {
             var left = ParsePower();
-            if (Match(TokenTypes.op, "*", "mult", "multiply", "/", "div", "divide"))
+            if (Match(TokenTypes.op, "*") || Match(TokenTypes.keyword, "mult", "multiply"))
             {
+                CurrentToken.token = "*";
                 var node = new BinaryOp(CurrentToken);
                 node.Left = left;
                 Consume();
                 node.Right = ParseMult();
                 return node;
             }
-            else
+            else if (Match(TokenTypes.op, "/") || Match(TokenTypes.keyword,  "div", "divide"))
+            {
+                CurrentToken.token = "/";
+                var node = new BinaryOp(CurrentToken);
+                node.Left = left;
+                Consume();
+                node.Right = ParseMult();
+                return node;
+            }
             {
                 return left;
             }
@@ -572,7 +592,25 @@ namespace CoreParser.Parser
         {
             if (Match(TokenTypes.op, "-", "minus"))
             {
+                CurrentToken.token = "-";
                 var node = new UnaryNode(CurrentToken);
+                Consume();
+                node.Child = ParseExpression();
+                return node;
+            }
+            else
+            {
+                return ParseNot();
+            }
+        }
+
+
+        //Parses boolean negation
+        private Node ParseNot()
+        {
+            if (Match(TokenTypes.op, "!", "not"))
+            {
+                var node = new UnaryNode(new Token() { token = "!"});
                 Consume();
                 node.Child = ParseExpression();
                 return node;

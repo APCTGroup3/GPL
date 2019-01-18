@@ -4,6 +4,11 @@ using System.Collections;
 
 namespace EngineLibrary
 {
+    /* Defines the return types for the GPL Language.
+     * Each type inheritcs from this abstract Terminal Class
+     * which provides casting methods and an abstract ToString method */
+
+
     public abstract class Terminal
     {
         public string TypeName { get; private set; }
@@ -27,6 +32,7 @@ namespace EngineLibrary
         }
     }
 
+    //An integer or double
     public class Number : Terminal
     {
         public double Value { get; private set; }
@@ -53,6 +59,7 @@ namespace EngineLibrary
         }
     }
 
+    //String type, can't call this String as this is a reserved word in C#
     public class Str : Terminal
     {
         public string Value { get; private set; }
@@ -66,6 +73,7 @@ namespace EngineLibrary
         }
     }
 
+    //Null or blank return type. Used to initialize arrays and as a return value for std library void methods such as Print.
     public class Void : Terminal
     {
         public Void() : base("Void") {}
@@ -75,9 +83,10 @@ namespace EngineLibrary
         }
     }
 
+    //An Array type
     public class Arr : Terminal
     {
-        public ArrayList Elements { get; private set; }
+        public ArrayList Elements { get; private set; } //Can be a mixture of Terminal elements
 
         //Creates an empty array of size 0
         public Arr() : base("Array")
@@ -95,6 +104,8 @@ namespace EngineLibrary
             }
         }
 
+
+        //Adds a new element to the given position in the array, overwring the existing value if necessary and expanding the array if out of bounds.
         public void Add(int index, Terminal element)
         {
             if (index < 0)
@@ -118,6 +129,8 @@ namespace EngineLibrary
             int index = (int)i.ToDouble();
             Add(index, element);
         }
+
+        //Returns the value at the given position in the array
         public Terminal Get(int i)
         {
             if (i < 0)
@@ -136,6 +149,8 @@ namespace EngineLibrary
             int i = (int)n.ToDouble();
             return Get(i);
         }
+
+        //Returns a list-style string representation of the array
         public override string ToStr()
         {
             var str = "[";

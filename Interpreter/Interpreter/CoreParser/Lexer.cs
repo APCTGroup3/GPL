@@ -13,7 +13,7 @@ namespace CoreParser
         //Reserved words
         private static string[] reservedKeywords =
         {
-            "for", "do", "if", "else", "then", "while", "elif"
+            "for", "do", "if", "else", "then", "while", "elif", "add", "subtract", "minus", "divide", "multiply"
         };
         private static string[] reservedOps =
         {
@@ -23,6 +23,7 @@ namespace CoreParser
         {
             "true", "false"
         };
+
 
         private static string symbols = "+-=&|/*(){}<>[]!%.,?;:^";
         private const char END_OF_FILE = '\0';
@@ -58,6 +59,7 @@ namespace CoreParser
             }
         }
 
+        //Returns the character ahead of the current character by the given amount
         private char Peek(int charsAhead)
         {
             if (position + charsAhead >= sourceCode.Length)
@@ -73,23 +75,27 @@ namespace CoreParser
             TokenList = new List<Token>();
         }
 
+        //Adds the current character to the current token in construction and advances
         private void Consume()
         {
             currentToken += Current;
             Advance();
         }
+        //Moves to the next character in the source file
         private void Advance()
         {
             position++;
             colNum++;
         }
+
+        //Increments the line counter and resets the column count
         private void ProcessNewLine()
         {
             lineNum++;
             colNum = 0;
         }
 
-
+        //Starting point. Resets the token list and processes the loaded source code
         public void Tokenise() {
             //Reset params
             TokenList = new List<Token>();
@@ -106,6 +112,7 @@ namespace CoreParser
             BuildToken(TokenTypes.eof);
         }
 
+        //Inspects the next character(s) in the source file and constructs a new token
         private void ProcessNextToken()
         {
             //Attempt to create tokens depending on current char
@@ -153,7 +160,7 @@ namespace CoreParser
                 tokenType = type
             };
             TokenList.Add(token);
-            currentToken = "";
+            currentToken = ""; //Start new token next iteration
         }
         private void BuildToken(TokenTypes type, ConstTypes constType)
         {
@@ -169,7 +176,7 @@ namespace CoreParser
         }
 
 
-        /* Methods for identifying character type */
+        /* Methods for identifying character types */
         private bool IsDigit()
         {
             return char.IsDigit(Current);
@@ -243,6 +250,10 @@ namespace CoreParser
             {
                 while (!(Current == '*' && Next == '/'))
                 {
+                    if (IsNewLine())
+                    {
+                        ProcessNewLine();
+                    }
                     Advance();
                 }
                 Advance();

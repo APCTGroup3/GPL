@@ -5,32 +5,33 @@ namespace EngineLibrary
 {
     public delegate Terminal FunctionDelegate(params Terminal[] parameters);
 
-
+    /* Defines a built-in function for the GPL language */
     public class Function
     {
-        public string Name { get; }
-        private Type[] parameterTypes;
-        private FunctionDelegate function;
-
+        public string Name { get; } //The method name
+        public Type[] ParameterTypes { get; private set; } //The arg types in the order they should be given
+        private FunctionDelegate function; //The method implementation
+          
          
         public Function(string name, Type[] types, FunctionDelegate func)
         {
             Name = name;
-            parameterTypes = types;
+            ParameterTypes = types;
             function = func;
         }
 
+        //Executes the function given correct arguments, else throws an exception
         public Terminal Execute(params Terminal[] args)
         {
             //Check parameters passed
-            if (args.Length != parameterTypes.Length)
+            if (args.Length != ParameterTypes.Length)
             {
-                throw new Exception("Error in function " + Name + ": Expected " + parameterTypes.Length + "arguments, found " + args.Length);
+                throw new Exception("Error in function " + Name + ": Expected " + ParameterTypes.Length + " arguments, found " + args.Length);
             }
 
             for (int i = 0; i < args.Length; i++)
             {
-                if (!(args[i].GetType().Equals(parameterTypes[i]) || args[i].GetType().IsSubclassOf(parameterTypes[i])))
+                if (!(args[i].GetType().Equals(ParameterTypes[i]) || args[i].GetType().IsSubclassOf(ParameterTypes[i])))
                 {
                     throw new Exception("Incorrect parameter type");
                 }
@@ -44,23 +45,37 @@ namespace EngineLibrary
     {
         private static List<Function> functions = new List<Function>();
 
-
         //Static variables used in functions
         private static readonly Random rnd = new Random();
 
+        /* Given a method name and array of parameters, executes the corresponding method if one exists, or throws an exception */
         public static Terminal Run(string name, params Terminal[] args)
         {
             foreach (Function f in functions)
             {
                 if (f.Name.Equals(name))
                 {
-                    return f.Execute(args);
+                    var valid = true;
+                    //Check parameters passed
+                    if (args.Length != f.ParameterTypes.Length)
+                    {
+                        valid = false;
+                    }
+
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        if (!(args[i].GetType().Equals(f.ParameterTypes[i]) || args[i].GetType().IsSubclassOf(f.ParameterTypes[i])))
+                        {
+                            valid = false;
+                        }
+                    }
+                    if (valid) return f.Execute(args);
                 }
             }
-            throw new Exception("No method " + name + " found");
+            throw new Exception("No method " + name + " found that has the given method signature.");
         }
 
-
+        //Defines built-in functions usable by the language
         static StandardLibrary()
         {
             //Pow functions
@@ -71,6 +86,7 @@ namespace EngineLibrary
                                        }
                                       ));
 
+            //Prints a string to the console
             functions.Add(new Function("Print", new Type[] { typeof(Terminal) },
                                       args =>
             {
@@ -79,6 +95,16 @@ namespace EngineLibrary
                 return new Void();
             }));
 
+            //Blank print function for printing newline
+            functions.Add(new Function("Print", new Type[] { },
+                                      args =>
+                                      {
+                                          Console.WriteLine();
+                                          ConsoleOutput.Instance.AddNewLine("");
+                                          return new Void();
+                                      }));
+
+            //Returns the length of a given array
             functions.Add(new Function("Length", new Type[] { typeof(Arr) },
                 args =>
                 {
@@ -86,6 +112,7 @@ namespace EngineLibrary
                 }
             ));
 
+            //Example search function for an array 
             functions.Add(new Function("BinarySearch", new Type[] { typeof(Arr), typeof(Number) },
                 args =>
                 {
@@ -123,6 +150,7 @@ namespace EngineLibrary
                 }
             ));
 
+            //Returns an empty array of the given size;
             functions.Add(new Function("InitArray", new Type[] { typeof(Number) },
                 args =>
                 {
@@ -131,17 +159,23 @@ namespace EngineLibrary
                 }
             ));
 
+
+            //Generates a random integer between two given limits
             functions.Add(new Function("Random", new Type[] { typeof(Number), typeof(Number) },
                 args =>
                 {
-                    var min = (int)args[0].ToDouble();
-                    var max = (int)args[1].ToDouble();
+                    var arg0 = (int)args[0].ToDouble();
+                    var arg1 = (int)args[1].ToDouble();
+
+                    var min = Math.Min(arg0, arg1);
+                    var max = Math.Max(arg0, arg1);
 
                     var res = rnd.Next(min, max);
                     return new Number(res);
                 }
             ));
 
+            //Given a number, returns it's floor int value
             functions.Add(new Function("Int", new Type[] { typeof(Number) },
                 args =>
                 {
@@ -149,6 +183,7 @@ namespace EngineLibrary
                 }
             ));
 
+            //Returns the lowest Number of two given numbers
             functions.Add(new Function("Min", new Type[] { typeof(Number), typeof(Number) },
                 args =>
                 {

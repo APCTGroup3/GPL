@@ -11,7 +11,31 @@ module Engine =
     type Engine() = 
         let mutable Stack : Collections.Generic.Stack<Context> = new Collections.Generic.Stack<Context>() //Variable stack
         do Stack.Push(new Context())
+        (* Inspects the given node and calls corresponding Visit function depending on its type *)
+        member this.Visit (node: Node) : Terminal =
+            let value = match node with
+                        | :? TerminalNode -> this.Visit_Terminal(node)
+                        | :? BinaryOp -> this.Visit_BinaryOp(node)
+                        | :? UnaryNode -> this.Visit_UnaryOp(node)
+                        | :? Assignment -> this.Visit_Assign(node:?>Assignment)
+                        | :? ArrayAssignment -> this.Visit_AssignArrayElement(node:?>ArrayAssignment)
+                        | :? Variable -> this.Visit_Variable(node)
+                        | :? ArrayElement -> this.Visit_ArrayElement(node:?>ArrayElement)
+                        | :? IfNode -> this.Visit_If(node:?>IfNode)
+                        | :? FunctionNode -> this.Visit_Function(node:?>FunctionNode)
+                        | :? WhileNode -> this.Visit_While(node:?>WhileNode)
+                        | :? BlockNode -> this.Visit_Block(node:?>BlockNode)
+                        | _ -> failwithf "Parser Error"
+            value
 
+
+        (* Main point of entry for program. Takes a root AST node and traverses tree *)
+        member this.Run (node: Node) : Terminal =
+            this.Visit (node)
+
+
+
+        (* Visitor functions (each corresponds to a Node subclass as defined in the Parser package *)
         member this.Visit_Terminal (node: Node) : Terminal =
             let tokenType = node.Token.constType
             let rawVal = node.Token.token
@@ -26,6 +50,12 @@ module Engine =
             let op = node.Token.token
             let eval = this.Visit(node.Children().[0])
             let value = match op with
+                        | "not" -> match eval with
+                                   | :? Boolean -> new Boolean(not (eval.ToBool())) :> Terminal
+                                   | _ -> failwithf "Operator %s cannot be applied to %s" op eval.TypeName
+                        | "!" -> match eval with
+                                 | :? Boolean -> new Boolean(not (eval.ToBool())) :> Terminal
+                                 | _ -> failwithf "Operator %s cannot be applied to %s" op eval.TypeName
                         | "-" -> match eval with
                                  | :? Number -> new Number(-(eval.ToDouble())) :> Terminal
                                  | :? Boolean -> new Boolean(not (eval.ToBool())) :> Terminal
@@ -133,10 +163,17 @@ module Engine =
 
         member this.Visit_Function(node: FunctionNode) =
             let nodeParams = node.Parameters
-            let parameters = Array.init nodeParams.Count (fun i -> this.Visit(nodeParams.[i]))
-            let name = node.Token.token
-            let result = StandardLibrary.Run(name, parameters)
-            result
+            if nodeParams.Count > 0 then
+                let parameters = Array.init nodeParams.Count (fun i -> this.Visit(nodeParams.[i]))
+                let name = node.Token.token
+                let result = StandardLibrary.Run(name, parameters)
+                result
+            else
+                let parameters : Terminal[] = [||]
+                let name = node.Token.token
+                let result = StandardLibrary.Run(name, parameters)
+                result
+            
 
         member this.Visit_While(node:WhileNode) =
             let block = node.Block
@@ -151,21 +188,4 @@ module Engine =
                 this.Visit(statement) |> ignore
             new Void() :> Terminal
 
-        member this.Visit (node: Node) : Terminal =
-            let value = match node with
-                        | :? TerminalNode -> this.Visit_Terminal(node)
-                        | :? BinaryOp -> this.Visit_BinaryOp(node)
-                        | :? UnaryNode -> this.Visit_UnaryOp(node)
-                        | :? Assignment -> this.Visit_Assign(node:?>Assignment)
-                        | :? ArrayAssignment -> this.Visit_AssignArrayElement(node:?>ArrayAssignment)
-                        | :? Variable -> this.Visit_Variable(node)
-                        | :? ArrayElement -> this.Visit_ArrayElement(node:?>ArrayElement)
-                        | :? IfNode -> this.Visit_If(node:?>IfNode)
-                        | :? FunctionNode -> this.Visit_Function(node:?>FunctionNode)
-                        | :? WhileNode -> this.Visit_While(node:?>WhileNode)
-                        | :? BlockNode -> this.Visit_Block(node:?>BlockNode)
-                        | _ -> failwithf "Parser Error"
-            value
-
-        member this.Run (node: Node) : Terminal =
-            this.Visit (node)
+        

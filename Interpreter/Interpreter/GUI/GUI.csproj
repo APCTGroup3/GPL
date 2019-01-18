@@ -68,8 +68,10 @@
     <Reference Include="Wit.NET">
       <HintPath>..\packages\MatheusFroes.Wit.NET.1.0.3\lib\net452\Wit.NET.dll</HintPath>
     </Reference>
-    <Reference Include="EngineLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Mono.Cairo" />
+    <Reference Include="EngineLibrary">
+      <HintPath>..\EngineLibrary\bin\Debug\netcoreapp2.1\EngineLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
